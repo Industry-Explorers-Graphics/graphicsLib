@@ -11,20 +11,22 @@
 /* This is where we'll store the pixels */
 struct pixel { uint8_t r, g, b, a; };
 struct pixel fb[W][H];
-struct pixel PINK;
-PINK.r = 240;
-PINK.g = 54;
-PINK.b = 87;
-PINK.a = 0;
 
-/* Draw a full 2*pi period of the sine */
+/* Draw a pink line */
 void
 create_image ( void )
 {
+    struct pixel PINK;
+    PINK.r = 240;
+    PINK.g = 54;
+    PINK.b = 87;
+    PINK.a = 0;
+
         /* Run the width of the image */
         for ( int x=0; x<W; x++ )
         {
             int y = H/2;
+            /* Give the line the color PINK */
             fb[x][y] = PINK;
         }
 }
@@ -47,9 +49,6 @@ write_ppm ( char *filename )
                 for ( size_t i=0; i<H; i++ )
                             for ( size_t j=0; j<W; j++ )
                             {
-                               fwrite ( &r[i][j], sizeof(uint8_t), 1, out ); /* Red */
-                               fwrite ( &g[i][j], sizeof(uint8_t), 1, out ); /* Green */
-                               fwrite ( &b[i][j], sizeof(uint8_t), 1, out ); /* Blue */
                             }
                 fclose ( out );
 }
@@ -59,6 +58,6 @@ int
 main ()
 {
         create_image();
-            write_ppm ( "sine.ppm" );
+            write_ppm ( "test.ppm" );
                 exit ( EXIT_SUCCESS );
 }
