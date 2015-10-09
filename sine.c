@@ -18,9 +18,6 @@ typedef struct frameBuffer
 } frameBuffer;
 
 
-/* Support the frame buffer*/
-frameBuffer *fb;
-
 /* Image functions */
 frameBuffer * Create( int width, int height )
 {
