@@ -15,9 +15,9 @@ typedef struct frameBuffer
     int width;
     int height;
     Pixel *data;
-} frameBuffer;
+} FrameBuffer;
 
-Pixel PINK =
-{
-     240, 54, 87
-};
+static const Pixel PINK = { 240, 54, 87 };
+FrameBuffer * createFrameBuffer( int width, int height );
+void setPixel( FrameBuffer *fb, int x, int y, Pixel color );
+void drawLine( FrameBuffer *fb );
