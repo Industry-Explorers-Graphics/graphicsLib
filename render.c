@@ -15,18 +15,30 @@ FrameBuffer *createFrameBuffer( int width, int height )
     return fb;
 }
 
-/* Create a drawing on frame buffer  */
+/* With given x and y coordinates, give the pixels a color  */
 void setPixel( FrameBuffer *fb, int x, int y, Pixel color )
 {
     int offset = y * fb->width + x;
     fb->data[offset] = color;
 }
 
+/* Return color when pixel location is given */
+
+
+/* Draw a line on FrameBuffer */
 void drawLine( FrameBuffer *fb )
 {
-    for ( int x = 10; x < 60; x++ )
+    for( int x = 10; x < 60; x++ )
     {
-        setPixel( fb, x, 10, PINK );
+        setPixel( fb, x, 50, PINK );
     }
 }
 
+/* Draw a vertical line */
+void verticalLine( FrameBuffer *fb, int length, int x, int y)
+{
+    for( int i = y; i < ( y + length); i++ )
+    {
+        setPixel( fb, x, i, PINK );
+    }
+}
