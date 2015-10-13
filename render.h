@@ -18,7 +18,8 @@ typedef struct frameBuffer
 } FrameBuffer;
 
 static const Pixel PINK = { 240, 54, 87 };
-FrameBuffer *createFrameBuffer( int width, int height );
-void horizontalLine( FrameBuffer *fb, int length, int x, int y );
-void verticalLine( FrameBuffer *fb, int length, int x,  int y);
-void squaredRect( FrameBuffer *fb, int length, int width, int x, int y );
+FrameBuffer *createFrameBuffer ( int width, int height );
+void horizontalLine ( FrameBuffer *fb, int length, int x, int y );
+void verticalLine ( FrameBuffer *fb, int length, int x,  int y);
+void squaredRect ( FrameBuffer *fb, int length, int width, int x, int y );
+void diagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel color );
