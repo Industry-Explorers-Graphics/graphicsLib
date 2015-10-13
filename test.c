@@ -19,7 +19,7 @@ int
 main ()
 {
        FrameBuffer *fb =  createFrameBuffer( 320, 256 );
-       verticalLine( fb, 100, 50, 5 );
-       write_ppm ( "HEY.ppm", fb );
+       squaredRect( fb, 100, 50, 10, 5 );
+       write_ppm ( "sRect.ppm", fb );
        return 0;
 }

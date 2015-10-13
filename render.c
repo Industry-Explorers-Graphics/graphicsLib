@@ -26,11 +26,11 @@ void setPixel( FrameBuffer *fb, int x, int y, Pixel color )
 
 
 /* Draw a line on FrameBuffer */
-void drawLine( FrameBuffer *fb )
+void horizontalLine( FrameBuffer *fb, int length, int x, int y )
 {
-    for( int x = 10; x < 60; x++ )
+    for( int i = x; i < ( x + length); i++ )
     {
-        setPixel( fb, x, 50, PINK );
+        setPixel( fb, i, y, PINK );
     }
 }
 
@@ -40,5 +40,25 @@ void verticalLine( FrameBuffer *fb, int length, int x, int y)
     for( int i = y; i < ( y + length); i++ )
     {
         setPixel( fb, x, i, PINK );
+    }
+}
+
+/* Draw a rectangle with square corners*/
+void squaredRect( FrameBuffer *fb, int length, int width, int x, int y )
+{
+   if ( length > 0 && width > 0 )
+   {
+        for( int i = x; i < ( x + length ); i++ )
+        {   
+            setPixel( fb, i, y, PINK );
+            setPixel( fb, i, (y + width), PINK );
+        }
+
+        for( int j = y; j < ( y + width ); j++ )
+        {
+            setPixel( fb, x, j, PINK );
+            setPixel( fb, (x + length), j, PINK );
+        }
+        
     }
 }
