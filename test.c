@@ -17,7 +17,7 @@ void write_ppm ( char *filename, FrameBuffer *fb )
 int main ()
 {
        FrameBuffer *fb =  createFrameBuffer( 320, 256 );
-       diagonalLine ( fb, 10, 10, 200, 200, PINK );
-       write_ppm ( "diagonal.ppm", fb );
+       triangle ( fb, 30, 50, 50, 20, 50, 20, 10, 20, 30, 50, 10, 20, PINK );
+       write_ppm ( "triangle.ppm", fb );
        return 0;
 }

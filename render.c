@@ -23,26 +23,27 @@ void setPixel ( FrameBuffer *fb, int x, int y, Pixel color )
 }
 
 /* Return color when pixel location is given */
-int getPixel ( FrameBuffer *fb, int x, int y)
+// I'm still working on this
+Pixel getPixel ( FrameBuffer *fb, int x, int y)
 {
-       
+    //return Pixel color;      
 }
 
-/* Draw a line on FrameBuffer */
-void horizontalLine ( FrameBuffer *fb, int length, int x, int y )
+/* Create  a horizontal line on FrameBuffer */
+void horizontalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color )
 {
     for( int i = x; i < ( x + length ); i++ )
     {
-        setPixel( fb, i, y, PINK );
+        setPixel( fb, i, y, color );
     }
 }
 
 /* Draw a vertical line */
-void verticalLine ( FrameBuffer *fb, int length, int x, int y )
+void verticalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color )
 {
     for( int i = y; i < ( y + length ); i++ )
     {
-        setPixel( fb, x, i, PINK );
+        setPixel( fb, x, i, color );
     }
 }
 
@@ -96,7 +97,7 @@ void diagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel color
                 yStart += sdy;
             }
             xStart += sdx;
-            setPixel( fb,  xStart, yStart, PINK  );
+            setPixel( fb,  xStart, yStart, color );
         }
     }
     else
@@ -110,32 +111,67 @@ void diagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel color
                 xStart += sdx;
             }
             yStart += sdy;
-            setPixel( fb, xStart, yStart, PINK );
+            setPixel( fb, xStart, yStart, color );
         }
     }
 }
 
 
 /* Draw a rectangle with square corners*/
-void squaredRect ( FrameBuffer *fb, int length, int width, int x, int y )
+void squaredRect ( FrameBuffer *fb, int length, int width, int x, int y, Pixel color )
 {
    if ( length > 0 && width > 0 )
    {
         for( int i = x; i < ( x + length ); i++ )
         {   
-            setPixel( fb, i, y, PINK );
-            setPixel( fb, i, (y + width), PINK );
+            setPixel( fb, i, y, color );
+            setPixel( fb, i, ( y + width ), color );
         }
 
         for( int j = y; j < ( y + width ); j++ )
         {
-            setPixel( fb, x, j, PINK );
-            setPixel( fb, (x + length), j, PINK );
+            setPixel( fb, x, j, color );
+            setPixel( fb, ( x + length ), j, color );
         }
         
     }
 }
 
-/* Draw a rectangle with rounded corners  */
+/* Create a rectangle with rounded corners  */
 
+/* Create a triangle using the diagonal line function */
+// Order is important for this implementation!
+void triangle ( FrameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, int cx1,  int cy1, int cx2, int cy2, Pixel color )
+{
+    diagonalLine( fb, ax1, ay1, ax2, ay2, color );
+    diagonalLine( fb, bx1, by1, bx2, by2, color );
+    diagonalLine( fb, ax1, cy1, cx2, cy2, color );
+}
 
+void triangle (   )
+{
+    drawTriangle()
+    {
+        /* at first sort the three vertices by y-coordinate ascending so v1 is the topmost vertice */
+          sortVerticesAscendingByY();
+
+        /* here we know that v1.y <= v2.y <= v3.y */
+        /* check for trivial case of bottom-flat triangle */
+        if (v2.y == v3.y)
+                  {
+                          fillBottomFlatTriangle(v1, v2, v3);
+                            }
+        /* check for trivial case of top-flat triangle */
+        else if (vt1.y == vt2.y)
+                    {
+                            fillTopFlatTriangle(g, vt1, vt2, vt3);
+                              } 
+        else
+        {
+                              /* general case - split the triangle in a topflat and bottom-flat one */
+                              Vertice v4 = new Vertice( 
+                                            (int)(vt1.x + ((float)(vt2.y - vt1.y) / (float)(vt3.y - vt1.y)) * (vt3.x - vt1.x)), vt2.y);
+                                  fillBottomFlatTriangle(g, vt1, vt2, v4);
+                                      fillTopFlatTriangle(g, vt2, v4, vt3);
+                                        }
+    }
