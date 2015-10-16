@@ -6,6 +6,8 @@
 #ifndef render_h
 #define render_h
 
+#define swap16(a, b) { int16_t t = a; a = b; b = t; }
+
 /* Image parameters */
 /* Create the pixel bytes */
 typedef struct pixel

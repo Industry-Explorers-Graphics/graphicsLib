@@ -251,81 +251,82 @@ void drawFillTriangle ( FrameBuffer *fb,
     point sorted[3];
     sortVerticesAscendingByY( sorted, x1, y1, x2, y2, x3, y3 );
 
-    if (sorted[0].y == sorted[2].y) { 
-                a = b = sorted[0].x;
+	// Handle case if points form a horizontal line
+    if (sorted[0].y == sorted[2].y) 
+	{ 
+        a = b = sorted[0].x;
                         
-                        if (sorted[1].x < a) 
-                                        a = sorted[1].x;
-                                else if (sorted[1].x > b) 
-                                                b = sorted[1].x;
+        if (sorted[1].x < a)
+            a = sorted[1].x;
+        else if (sorted[1].x > b) 
+            b = sorted[1].x;
 
-                                        if (sorted[2].x < a) 
-                                                        a = sorted[2].x;
-                                                else if (sorted[2].x > b) 
-                                                                b = sorted[2].x;
+        if (sorted[2].x < a) 
+            a = sorted[2].x;
+        else if (sorted[2].x > b) 
+            b = sorted[2].x;
 
-                                                        raster_rgba_hline_blend(pb, a, sorted[0].y, b - a + 1, color);
-                                                                return;
-                                                                    }
+		drawHorizontalLine(fb, b - a + 1, a, sorted[0].y, color);
+        return;
+    }
 
-        int16_t
-                    dx01 = sorted[1].x - sorted[0].x,
-                                dy01 = sorted[1].y - sorted[0].y,
-                                        dx02 = sorted[2].x - sorted[0].x,
-                                                dy02 = sorted[2].y - sorted[0].y,
-                                                        dx12 = sorted[2].x - sorted[1].x,
-                                                                dy12 = sorted[2].y - sorted[1].y;
+    int16_t
+		dx01 = sorted[1].x - sorted[0].x,
+		dy01 = sorted[1].y - sorted[0].y,
+		dx02 = sorted[2].x - sorted[0].x,
+		dy02 = sorted[2].y - sorted[0].y,
+		dx12 = sorted[2].x - sorted[1].x,
+		dy12 = sorted[2].y - sorted[1].y;
             
-            int32_t sa = 0, sb = 0;
+    int32_t sa = 0, sb = 0;
 
-                // For upper part of triangle, find scanline crossings for segments
-                //  // 0-1 and 0-2. If y1=y2 (flat-bottomed triangle), the scanline y1
-                //      // is included here (and second loop will be skipped, avoiding a /0
-                //          // error there), otherwise scanline y1 is skipped here and handled
-                //              // in the second loop...which also avoids a /0 error here if y0=y1
-                //                  // (flat-topped triangle).
-                //                      if (sorted[1].y == sorted[2].y) 
-                //                              last = sorted[1].y; // Include y1 scanline
-                //                                  else 
-                //                                          last = sorted[1].y - 1; // Skip it
-                //                                              
-                //                                                  for (y = sorted[0].y; y <= last; y++) 
-                //                                                      {
-                //                                                              a = sorted[0].x + sa / dy01;
-                //                                                                      b = sorted[0].x + sb / dy02;
-                //                                                                              sa += dx01;
-                //                                                                                      sb += dx02;
-                //                                                                                              /* longhand:
-                //                                                                                                      a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
-                //                                                                                                              b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
-                //                                                                                                                      */
-                //                                                                                                                              
-                //                                                                                                                                      if (a > b) swap16(a, b);
-                //                                                                                                                                              raster_rgba_hline_blend(pb, a, y, b - a + 1, color);
-                //                                                                                                                                                  }
-                //
-                //                                                                                                                                                      // For lower part of triangle, find scanline crossings for segments
-                //                                                                                                                                                          // 0-2 and 1-2. This loop is skipped if y1=y2.
-                //                                                                                                                                                              sa = dx12 * (y - sorted[1].y);
-                //                                                                                                                                                                  sb = dx02 * (y - sorted[0].y);
-                //                                                                                                                                                                      for (; y <= sorted[2].y; y++) 
-                //                                                                                                                                                                          {
-                //                                                                                                                                                                                  a = sorted[1].x + sa / dy12;
-                //                                                                                                                                                                                          b = sorted[0].x + sb / dy02;
-                //                                                                                                                                                                                                  sa += dx12;
-                //                                                                                                                                                                                                          sb += dx02;
-                //                                                                                                                                                                                                                  /* longhand:
-                //                                                                                                                                                                                                                          a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
-                //                                                                                                                                                                                                                                  b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
-                //                                                                                                                                                                                                                                          */
-                //                                                                                                                                                                                                                                                  if (a > b) 
-                //                                                                                                                                                                                                                                                              swap16(a, b);
-                //
-                //                                                                                                                                                                                                                                                                      raster_rgba_hline_blend(pb, a, y, b - a + 1, color);
-                //                                                                                                                                                                                                                                                                          }
-                //                                                                                                                                                                                                                                                                          }
-                //
-
+    // For upper part of triangle, find scanline crossings for segments
+    // 0-1 and 0-2. If y1=y2 (flat-bottomed triangle), the scanline y1
+	// is included here (and second loop will be skipped, avoiding a /0
+	// error there), otherwise scanline y1 is skipped here and handled
+	// in the second loop...which also avoids a /0 error here if y0=y1
+	// (flat-topped triangle).
+	if (sorted[1].y == sorted[2].y) 
+		last = sorted[1].y; // Include y1 scanline
+	else 
+		last = sorted[1].y - 1; // Skip it
+                                                          
+	for (y = sorted[0].y; y <= last; y++) 
+	{
+		a = sorted[0].x + sa / dy01;
+		b = sorted[0].x + sb / dy02;
+		sa += dx01;
+		sb += dx02;
+		/* longhand:
+		a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
+		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
+		*/
+                                                                                                                                             
+		if (a > b) swap16(a, b);
+			raster_rgba_hline_blend(pb, a, y, b - a + 1, color);
+	}
+                
+	// For lower part of triangle, find scanline crossings for segments
+	// 0-2 and 1-2. This loop is skipped if y1=y2.
+	sa = dx12 * (y - sorted[1].y);
+	sb = dx02 * (y - sorted[0].y);
+	for (; y <= sorted[2].y; y++) 
+	{
+		a = sorted[1].x + sa / dy12;
+		b = sorted[0].x + sb / dy02;
+		sa += dx12;
+		sb += dx02;
+		/* longhand:
+		a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
+		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
+		*/
+		if ( a > b ) 
+			swap16( a, b );
+                
+		drawHorizontalLine(fb, b - a + 1, a, y, color);
+	}
+}
+                
 void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color)
 {
   int x = radius;
