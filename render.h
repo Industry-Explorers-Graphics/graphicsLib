@@ -20,6 +20,14 @@ typedef struct frameBuffer
     Pixel *data;
 } FrameBuffer;
 
+typedef struct _point
+{
+    int x;
+    int y;
+} point;
+
+static const point pt = { x, y };
+
 static const Pixel PINK = { 240, 54, 87 };
 FrameBuffer *createFrameBuffer ( int width, int height );
 //Pixel getPixel(FrameBuffer * fb, int x, int y);

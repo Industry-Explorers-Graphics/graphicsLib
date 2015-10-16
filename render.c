@@ -151,40 +151,180 @@ void drawFillRect(FrameBuffer * fb, int x, int y, int width, int height, Pixel c
 
 /* Create a triangle using the diagonal line function */
 // Order is important for this implementation!
-//void drawTriangle ( FrameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, int cx1,  int cy1, int cx2, int cy2, Pixel color )
-//{
-//    drawDiagonalLine( fb, ax1, ay1, ax2, ay2, color );
-//    drawDiagonalLine( fb, bx1, by1, bx2, by2, color );
-//    drawDiagonalLine( fb, ax1, cy1, cx2, cy2, color );
-//}
-//
-//void triangle (   )
-//{
-//    drawTriangle()
-//    {
-//        /* at first sort the three vertices by y-coordinate ascending so v1 is the topmost vertice */
-//          sortVerticesAscendingByY();
-//
-//        /* here we know that v1.y <= v2.y <= v3.y */
-//        /* check for trivial case of bottom-flat triangle */
-//        if (v2.y == v3.y)
-//                  {
-//                          fillBottomFlatTriangle(v1, v2, v3);
-//                            }
-//        /* check for trivial case of top-flat triangle */
-//        else if (vt1.y == vt2.y)
-//                    {
-//                            fillTopFlatTriangle(g, vt1, vt2, vt3);
-//                              }
-//        else
-//        {
-//                              /* general case - split the triangle in a topflat and bottom-flat one */
-//                              Vertice v4 = new Vertice(
-//                                            (int)(vt1.x + ((float)(vt2.y - vt1.y) / (float)(vt3.y - vt1.y)) * (vt3.x - vt1.x)), vt2.y);
-//                                  fillBottomFlatTriangle(g, vt1, vt2, v4);
-//                                      fillTopFlatTriangle(g, vt2, v4, vt3);
-//                                        }
-//    }
+void drawTriangle ( FrameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, int cx1,  int cy1, int cx2, int cy2, Pixel color )
+{
+    drawDiagonalLine( fb, ax1, ay1, ax2, ay2, color );
+    drawDiagonalLine( fb, bx1, by1, bx2, by2, color );
+    drawDiagonalLine( fb, ax1, cy1, cx2, cy2, color );
+}
+
+/* Find the topmost vertex ( the one with the smallest y value ) of a polygon*/
+int findTopmostPolyVertex( point *poly, size_t numberOfElements )
+{
+    int yMin = INT32_MAX;
+    int vertexMin = 0;
+
+    // Create an iterator
+    size_t idx = 0;
+    while ( idx < numberOfElements )
+    {
+        // If the y value of the current index is less
+        // than the current value of yMin
+        // set vertexMin to be the value at the idx location
+        if (poly[idx].y < yMin ) 
+        {
+            yMin = poly[idx].y;
+            vertexMin = idx;
+        }
+        idx++;
+    }
+
+    return vertexMin;
+}
+
+/* Create a filled triangle */
+void sortVerticesAscendingByY( point *sorted int x1, int y1, int x2, int y2, int x3, int y3 )
+{
+    point vertices[3] = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
+    
+    int topmost = findTopmostPolyVertex( vertices, 3 );
+
+    // The topmost vertex should be the first point
+    sorted[0].x = vertices[topmost].x;
+    sorted[0].y = vertices[topmost].y;
+
+    // Sort the remaining two vertices
+    switch (topmost) 
+    {
+        case 0:
+            if (verts[1].y < verts[2].y)
+            {
+                sorted[1].x = verts[1].x; sorted[1].y = verts[1].y;
+                sorted[2].x = verts[2].x; sorted[2].y = verts[2].y;
+            }
+            else 
+            {
+                sorted[1].x = verts[2].x; sorted[1].y = verts[2].y;
+                sorted[2].x = verts[1].x; sorted[2].y = verts[1].y;
+            }
+            break;
+                                    
+        case 1:
+            if (verts[0].y < verts[2].y)
+            {
+                sorted[1].x = verts[0].x; sorted[1].y = verts[0].y;
+                sorted[2].x = verts[2].x; sorted[2].y = verts[2].y;
+            }
+            else 
+            {
+                sorted[1].x = verts[2].x; sorted[1].y = verts[2].y;
+                sorted[2].x = verts[0].x; sorted[2].y = verts[0].y;
+            }       
+            break;
+                                                                  
+        case 2:
+           if (verts[0].y < verts[1].y)
+           {
+               sorted[1].x = verts[0].x; sorted[1].y = verts[0].y;
+               sorted[2].x = verts[1].x; sorted[2].y = verts[1].y;
+           } 
+           else 
+           {
+               sorted[1].x = verts[1].x; sorted[1].y = verts[1].y;
+               sorted[2].x = verts[0].x; sorted[2].y = verts[0].y;
+           }
+    }
+
+}
+
+
+
+
+void drawFillTriangle ( FrameBuffer *fb, 
+        uint8_t x1, uint8_t y1,
+        uint8_t x2, uint8_t y2,
+        uint8_t x3, uint8_t y3, )
+{
+    int a, b, y last;
+
+    // Sort three vertices so v1 is at top 
+    point sorted[3];
+    sortVerticesAscendingByY( sorted, x1, y1, x2, y2, x3, y3 );
+
+    if (sorted[0].y == sorted[2].y) { 
+                a = b = sorted[0].x;
+                        
+                        if (sorted[1].x < a) 
+                                        a = sorted[1].x;
+                                else if (sorted[1].x > b) 
+                                                b = sorted[1].x;
+
+                                        if (sorted[2].x < a) 
+                                                        a = sorted[2].x;
+                                                else if (sorted[2].x > b) 
+                                                                b = sorted[2].x;
+
+                                                        raster_rgba_hline_blend(pb, a, sorted[0].y, b - a + 1, color);
+                                                                return;
+                                                                    }
+
+        int16_t
+                    dx01 = sorted[1].x - sorted[0].x,
+                                dy01 = sorted[1].y - sorted[0].y,
+                                        dx02 = sorted[2].x - sorted[0].x,
+                                                dy02 = sorted[2].y - sorted[0].y,
+                                                        dx12 = sorted[2].x - sorted[1].x,
+                                                                dy12 = sorted[2].y - sorted[1].y;
+            
+            int32_t sa = 0, sb = 0;
+
+                // For upper part of triangle, find scanline crossings for segments
+                //  // 0-1 and 0-2. If y1=y2 (flat-bottomed triangle), the scanline y1
+                //      // is included here (and second loop will be skipped, avoiding a /0
+                //          // error there), otherwise scanline y1 is skipped here and handled
+                //              // in the second loop...which also avoids a /0 error here if y0=y1
+                //                  // (flat-topped triangle).
+                //                      if (sorted[1].y == sorted[2].y) 
+                //                              last = sorted[1].y; // Include y1 scanline
+                //                                  else 
+                //                                          last = sorted[1].y - 1; // Skip it
+                //                                              
+                //                                                  for (y = sorted[0].y; y <= last; y++) 
+                //                                                      {
+                //                                                              a = sorted[0].x + sa / dy01;
+                //                                                                      b = sorted[0].x + sb / dy02;
+                //                                                                              sa += dx01;
+                //                                                                                      sb += dx02;
+                //                                                                                              /* longhand:
+                //                                                                                                      a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
+                //                                                                                                              b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
+                //                                                                                                                      */
+                //                                                                                                                              
+                //                                                                                                                                      if (a > b) swap16(a, b);
+                //                                                                                                                                              raster_rgba_hline_blend(pb, a, y, b - a + 1, color);
+                //                                                                                                                                                  }
+                //
+                //                                                                                                                                                      // For lower part of triangle, find scanline crossings for segments
+                //                                                                                                                                                          // 0-2 and 1-2. This loop is skipped if y1=y2.
+                //                                                                                                                                                              sa = dx12 * (y - sorted[1].y);
+                //                                                                                                                                                                  sb = dx02 * (y - sorted[0].y);
+                //                                                                                                                                                                      for (; y <= sorted[2].y; y++) 
+                //                                                                                                                                                                          {
+                //                                                                                                                                                                                  a = sorted[1].x + sa / dy12;
+                //                                                                                                                                                                                          b = sorted[0].x + sb / dy02;
+                //                                                                                                                                                                                                  sa += dx12;
+                //                                                                                                                                                                                                          sb += dx02;
+                //                                                                                                                                                                                                                  /* longhand:
+                //                                                                                                                                                                                                                          a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
+                //                                                                                                                                                                                                                                  b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
+                //                                                                                                                                                                                                                                          */
+                //                                                                                                                                                                                                                                                  if (a > b) 
+                //                                                                                                                                                                                                                                                              swap16(a, b);
+                //
+                //                                                                                                                                                                                                                                                                      raster_rgba_hline_blend(pb, a, y, b - a + 1, color);
+                //                                                                                                                                                                                                                                                                          }
+                //                                                                                                                                                                                                                                                                          }
+                //
 
 void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color)
 {
