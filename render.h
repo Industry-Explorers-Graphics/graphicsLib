@@ -6,6 +6,8 @@
 #ifndef render_h
 #define render_h
 
+#define swap16(a, b) { int16_t t = a; a = b; b = t; }
+
 /* Image parameters */
 /* Create the pixel bytes */
 typedef struct pixel
@@ -19,6 +21,14 @@ typedef struct frameBuffer
     int height;
     Pixel *data;
 } FrameBuffer;
+
+typedef struct _point
+{
+    int x;
+    int y;
+} point;
+
+static const point pt = { x, y };
 
 static const Pixel PINK = { 240, 54, 87 };
 FrameBuffer *createFrameBuffer ( int width, int height );
