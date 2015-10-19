@@ -26,7 +26,9 @@ int main ()
 //    point(fb, 600, 100, BLUE);
 //    bezier(fb, 350, 100, 550, 10, 600, 100, PINK);
 //    write_ppm ( "bezier.ppm", fb );
-    drawFillTriangle ( fb, 30, 50, 10, 20, 50, 40, PINK );
-    write_ppm ( "fillTriangle.ppm", fb );
+//    drawFillTriangle ( fb, 30, 50, 10, 20, 50, 40, PINK );
+    float vertices[] = { 10, 10, 10, 20, 20, 50, 30, 50, 30, 10 };
+    polygonFill( fb, vertices, 5, PINK )
+    write_ppm ( "polygon.ppm", fb );
     return 0;
 }

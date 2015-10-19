@@ -4,11 +4,6 @@
 #include <math.h>
 #include "render.h"
 
-//void pointInit ( Point *pt, const int x, const int y )
-//{
-  //  pt->x = x;
-    //pt->y = y;
-//}
 
 /* Image functions */
 FrameBuffer *createFrameBuffer ( int width, int height )
@@ -178,18 +173,18 @@ int findTopmostPolyVertex( Point *poly, size_t numberOfElements )
     int vertexMin = 0;
 
     // Create an iterator
-    size_t idx = 0;
-    while ( idx < numberOfElements )
+    size_t i = 0;
+    while ( i < numberOfElements )
     {
         // If the y value of the current index is less
         // than the current value of yMin
         // set vertexMin to be the value at the idx location
-        if (poly[idx].y < yMin )
+        if (poly[i].y < yMin )
         {
-            yMin = poly[idx].y;
-            vertexMin = idx;
+            yMin = poly[i].y;
+            vertexMin = i;
         }
-        idx++;
+        i++;
     }
 
     return vertexMin;
@@ -426,5 +421,98 @@ void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pix
         int y = getPt( ya , yb , i );
 
         setPixel(fb, x , y , color );
+    }
+}
+
+/* Create a filled Polygon with Triangulation */
+void setupPolygon( polygon poly, float *vertices, int numOfVerts, int vertIndex, int dir )
+{   
+    poly.vertIndex = vertIndex;
+    poly.vertNext = vertIndex + dir;
+
+    if( poly.vertNext < 0 ) {
+        poly.vertNext = numOfVerts - 1;
+    }
+    else if ( poly.vertNext == numOfVerts ){
+        poly.vertNext = 0;
+    }
+
+    // Set starting/ending y positions and current x position
+    poly.yStart = poly.yEnd;
+    poly.yEnd = round( vertices[poly.vertNext * 2 + 1] );
+    poly.x = vertices[poly.vertIndex * 2 + 0];
+
+    // Calculate fractional number of pixels to step in x ( dx )
+    int xdelta = vertices[poly.vertNext * 2 + 0] - vertices[polygon.vertIndex * 2 + 0];
+
+    int ydelta = poly.yEnd - poly.yStart;
+    if( ydelta > 0 ) {
+        poly.dx = xdelta / ydelta;
+    }
+    else {
+        poly.dx = 0;
+    }
+}
+
+void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, Pixel color )
+{
+    
+    int minVertex =  findTopmostPolyVertex( vertices, numOfVerts );
+
+    // Set the starting line
+    polygon leftSide, rightSide;
+    int y = int( vertices[minVertex * 2 + 1] );
+    leftSide.yEnd = rightSide.yEnd = y;
+
+    // Create polygon scanner for left-side starting at the top
+    setupPolygon( vertices, numOfVerts, minVertex, +1 ); 
+
+    // Create polygon scanner for right-side starting at the top
+    setupPolygon( vertices, numOfVerts, minVertex, -1 );
+
+    while ( true ) // Isn't this an infinite loop?
+    {
+        if ( y >= leftSide.yEnd )
+        {
+            if ( y >= rightSide.yEnd ) 
+            {
+                if ( leftSide.vertNext == rightSide.vertNext ) // if same vertex, then done
+                {
+                    break;
+                }
+                int vNext = rightSide.vertNext - 1;
+
+                if ( vNext == leftSide.vertNext )
+                {
+                    break;
+                }
+                setupPolygon( vertices, numOfVerts, leftSide.vertNext, +1 ); // reset left side
+            }
+
+            // Check for right side hitting end of polygon side
+            // if so, reset scanner
+            if ( y >= rightSide.yEnd ) 
+            {
+                setupPolygon( vertices, numOfVerts, rightSide.vertNext, -1 );
+            }
+
+            // Fill span between two line-drawers, advance drawers
+            // when vertices are hit
+            if ( y >= fb->width ) 
+            {
+                int length = ( rightSide.x) - ( leftSide.x );
+                drawHorizontalLine( FrameBuffer *fb, length, ( leftSide.x ), y, color );
+            }
+
+            leftSide.x += leftSide.dx;
+            rightSide.x += rightSide.dx;
+
+            // Advance y position. Exit if run off its bottom
+            y += 1;
+            if ( y >= fb->height ) 
+            {
+                break;
+            }
+        }
     }
 }
