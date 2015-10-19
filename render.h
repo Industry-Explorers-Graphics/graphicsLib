@@ -22,12 +22,23 @@ typedef struct frameBuffer
     Pixel *data;
 } FrameBuffer;
 
+/* Create a point */
 typedef struct point
 {
-    int x, y;
+    int x;
+    int y;
 } Point;
 
-//void pointInit( Point *pt, const int x, const int y );
+/* Create a polygon*/
+typedef struct polygon
+{
+    int vertIndex;
+    int vertNext;
+    float x;
+    float dx;
+    int yStart;
+    int yEnd;
+} polygon;
 
 static const Pixel PINK = { 240, 54, 87 };
 static const Pixel RED = { 250, 0, 0 };
@@ -54,4 +65,5 @@ void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel
 
 void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color);
 
+void polygonFill( FrameBuffer *fb, Point *vertices[], int numOfVerts, Pixel color);
 #endif
