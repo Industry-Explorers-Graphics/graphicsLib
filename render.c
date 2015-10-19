@@ -4,6 +4,12 @@
 #include <math.h>
 #include "render.h"
 
+//void pointInit ( Point *pt, const int x, const int y )
+//{
+  //  pt->x = x;
+    //pt->y = y;
+//}
+
 /* Image functions */
 FrameBuffer *createFrameBuffer ( int width, int height )
 {
@@ -151,7 +157,10 @@ void drawFillRect(FrameBuffer * fb, int x, int y, int width, int height, Pixel c
 
 /* Create a triangle using the diagonal line function */
 // Order is important for this implementation!
-void drawTriangle ( FrameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, int cx1,  int cy1, int cx2, int cy2, Pixel color )
+void drawTriangle ( FrameBuffer *fb, 
+        int ax1, int ay1, int ax2, int ay2, 
+        int bx1, int by1, int bx2, int by2, 
+        int cx1,  int cy1, int cx2, int cy2, Pixel color )
 {
     drawDiagonalLine( fb, ax1, ay1, ax2, ay2, color );
     drawDiagonalLine( fb, bx1, by1, bx2, by2, color );
@@ -159,7 +168,7 @@ void drawTriangle ( FrameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1
 }
 
 /* Find the topmost vertex ( the one with the smallest y value ) of a polygon*/
-int findTopmostPolyVertex( point *poly, size_t numberOfElements )
+int findTopmostPolyVertex( Point *poly, size_t numberOfElements )
 {
     int yMin = INT32_MAX;
     int vertexMin = 0;
@@ -182,14 +191,14 @@ int findTopmostPolyVertex( point *poly, size_t numberOfElements )
     return vertexMin;
 }
 
-/* Create a filled triangle */
-void sortVerticesAscendingByY( point *sorted int x1, int y1, int x2, int y2, int x3, int y3 )
+/* Sort Vertices by Ascending Y values */
+void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, int x3, int y3 )
 {
-    point vertices[3] = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
+    Point vertices[3] = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
     
     int topmost = findTopmostPolyVertex( vertices, 3 );
 
-    // The topmost vertex should be the first point
+    // The topmost vertex should be the first Point
     sorted[0].x = vertices[topmost].x;
     sorted[0].y = vertices[topmost].y;
 
@@ -197,58 +206,56 @@ void sortVerticesAscendingByY( point *sorted int x1, int y1, int x2, int y2, int
     switch (topmost) 
     {
         case 0:
-            if (verts[1].y < verts[2].y)
+            if (vertices[1].y < vertices[2].y)
             {
-                sorted[1].x = verts[1].x; sorted[1].y = verts[1].y;
-                sorted[2].x = verts[2].x; sorted[2].y = verts[2].y;
+                sorted[1].x = vertices[1].x; sorted[1].y = vertices[1].y;
+                sorted[2].x = vertices[2].x; sorted[2].y = vertices[2].y;
             }
             else 
             {
-                sorted[1].x = verts[2].x; sorted[1].y = verts[2].y;
-                sorted[2].x = verts[1].x; sorted[2].y = verts[1].y;
+                sorted[1].x = vertices[2].x; sorted[1].y = vertices[2].y;
+                sorted[2].x = vertices[1].x; sorted[2].y = vertices[1].y;
             }
             break;
                                     
         case 1:
-            if (verts[0].y < verts[2].y)
+            if (vertices[0].y < vertices[2].y)
             {
-                sorted[1].x = verts[0].x; sorted[1].y = verts[0].y;
-                sorted[2].x = verts[2].x; sorted[2].y = verts[2].y;
+                sorted[1].x = vertices[0].x; sorted[1].y = vertices[0].y;
+                sorted[2].x = vertices[2].x; sorted[2].y = vertices[2].y;
             }
             else 
             {
-                sorted[1].x = verts[2].x; sorted[1].y = verts[2].y;
-                sorted[2].x = verts[0].x; sorted[2].y = verts[0].y;
+                sorted[1].x = vertices[2].x; sorted[1].y = vertices[2].y;
+                sorted[2].x = vertices[0].x; sorted[2].y = vertices[0].y;
             }       
             break;
                                                                   
         case 2:
-           if (verts[0].y < verts[1].y)
+           if (vertices[0].y < vertices[1].y)
            {
-               sorted[1].x = verts[0].x; sorted[1].y = verts[0].y;
-               sorted[2].x = verts[1].x; sorted[2].y = verts[1].y;
+               sorted[1].x = vertices[0].x; sorted[1].y = vertices[0].y;
+               sorted[2].x = vertices[1].x; sorted[2].y = vertices[1].y;
            } 
            else 
            {
-               sorted[1].x = verts[1].x; sorted[1].y = verts[1].y;
-               sorted[2].x = verts[0].x; sorted[2].y = verts[0].y;
+               sorted[1].x = vertices[1].x; sorted[1].y = vertices[1].y;
+               sorted[2].x = vertices[0].x; sorted[2].y = vertices[0].y;
            }
     }
 
 }
 
-
-
-
+/* Create a filled triangle  */
 void drawFillTriangle ( FrameBuffer *fb, 
-        uint8_t x1, uint8_t y1,
-        uint8_t x2, uint8_t y2,
-        uint8_t x3, uint8_t y3, )
+        int x1, int y1,
+        int x2, int y2,
+        int x3, int y3, Pixel color )
 {
-    int a, b, y last;
+    int a, b, y, last;
 
     // Sort three vertices so v1 is at top 
-    point sorted[3];
+    Point sorted[3];
     sortVerticesAscendingByY( sorted, x1, y1, x2, y2, x3, y3 );
 
 	// Handle case if points form a horizontal line
@@ -302,15 +309,15 @@ void drawFillTriangle ( FrameBuffer *fb,
 		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
 		*/
                                                                                                                                              
-		if (a > b) swap16(a, b);
-			raster_rgba_hline_blend(pb, a, y, b - a + 1, color);
+		if ( a > b ) swap16( a, b );
+			drawHorizontalLine( fb, b - a + 1, a, y, color );
 	}
                 
 	// For lower part of triangle, find scanline crossings for segments
 	// 0-2 and 1-2. This loop is skipped if y1=y2.
-	sa = dx12 * (y - sorted[1].y);
-	sb = dx02 * (y - sorted[0].y);
-	for (; y <= sorted[2].y; y++) 
+	sa = dx12 * ( y - sorted[1].y );
+	sb = dx02 * ( y - sorted[0].y );
+	for ( ; y <= sorted[2].y; y++ ) 
 	{
 		a = sorted[1].x + sa / dy12;
 		b = sorted[0].x + sb / dy02;
