@@ -35,6 +35,10 @@ Pixel getPixel(FrameBuffer *fb, int x, int y) {
     Pixel color = fb -> data[offset];
     return color;
 }
+// made this for testing purposes
+void point(FrameBuffer * fb, int x, int y, Pixel color) {
+    setPixel(fb, x, y, color);
+}
 
 /* Create  a horizontal line on FrameBuffer */
 void drawHorizontalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color )
@@ -58,23 +62,23 @@ void drawVerticalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color )
 /* Check the sign of a number */
 int sign( int number )
 {
-    if ( number < 0 ) 
-    { 
+    if ( number < 0 )
+    {
         return -1;
     }
-    else if ( number >= 0 ) 
+    else if ( number >= 0 )
     {
         return 1;
     }
-    else 
+    else
     {
         return 0;
     }
 }
 
-void drawDiagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel color ) 
+void drawDiagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel color )
 {
-    
+
     int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, xStart, yStart;
     /* Calculate the horizontal distance from the line */
     dx = x2 - x1;
@@ -131,7 +135,7 @@ void drawSquaredRect ( FrameBuffer *fb, int length, int width, int x, int y, Pix
    if ( length > 0 && width > 0 )
    {
         for( int i = x; i < ( x + length ); i++ )
-        {   
+        {
             setPixel( fb, i, y, color );
             setPixel( fb, i, ( y + width ), color );
         }
@@ -141,7 +145,7 @@ void drawSquaredRect ( FrameBuffer *fb, int length, int width, int x, int y, Pix
             setPixel( fb, x, j, color );
             setPixel( fb, ( x + length ), j, color );
         }
-        
+
     }
 }
 
@@ -157,9 +161,9 @@ void drawFillRect(FrameBuffer * fb, int x, int y, int width, int height, Pixel c
 
 /* Create a triangle using the diagonal line function */
 // Order is important for this implementation!
-void drawTriangle ( FrameBuffer *fb, 
-        int ax1, int ay1, int ax2, int ay2, 
-        int bx1, int by1, int bx2, int by2, 
+void drawTriangle ( FrameBuffer *fb,
+        int ax1, int ay1, int ax2, int ay2,
+        int bx1, int by1, int bx2, int by2,
         int cx1,  int cy1, int cx2, int cy2, Pixel color )
 {
     drawDiagonalLine( fb, ax1, ay1, ax2, ay2, color );
@@ -180,7 +184,7 @@ int findTopmostPolyVertex( Point *poly, size_t numberOfElements )
         // If the y value of the current index is less
         // than the current value of yMin
         // set vertexMin to be the value at the idx location
-        if (poly[idx].y < yMin ) 
+        if (poly[idx].y < yMin )
         {
             yMin = poly[idx].y;
             vertexMin = idx;
@@ -195,7 +199,7 @@ int findTopmostPolyVertex( Point *poly, size_t numberOfElements )
 void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, int x3, int y3 )
 {
     Point vertices[3] = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
-    
+
     int topmost = findTopmostPolyVertex( vertices, 3 );
 
     // The topmost vertex should be the first Point
@@ -203,7 +207,7 @@ void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, in
     sorted[0].y = vertices[topmost].y;
 
     // Sort the remaining two vertices
-    switch (topmost) 
+    switch (topmost)
     {
         case 0:
             if (vertices[1].y < vertices[2].y)
@@ -211,33 +215,33 @@ void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, in
                 sorted[1].x = vertices[1].x; sorted[1].y = vertices[1].y;
                 sorted[2].x = vertices[2].x; sorted[2].y = vertices[2].y;
             }
-            else 
+            else
             {
                 sorted[1].x = vertices[2].x; sorted[1].y = vertices[2].y;
                 sorted[2].x = vertices[1].x; sorted[2].y = vertices[1].y;
             }
             break;
-                                    
+
         case 1:
             if (vertices[0].y < vertices[2].y)
             {
                 sorted[1].x = vertices[0].x; sorted[1].y = vertices[0].y;
                 sorted[2].x = vertices[2].x; sorted[2].y = vertices[2].y;
             }
-            else 
+            else
             {
                 sorted[1].x = vertices[2].x; sorted[1].y = vertices[2].y;
                 sorted[2].x = vertices[0].x; sorted[2].y = vertices[0].y;
-            }       
+            }
             break;
-                                                                  
+
         case 2:
            if (vertices[0].y < vertices[1].y)
            {
                sorted[1].x = vertices[0].x; sorted[1].y = vertices[0].y;
                sorted[2].x = vertices[1].x; sorted[2].y = vertices[1].y;
-           } 
-           else 
+           }
+           else
            {
                sorted[1].x = vertices[1].x; sorted[1].y = vertices[1].y;
                sorted[2].x = vertices[0].x; sorted[2].y = vertices[0].y;
@@ -247,30 +251,30 @@ void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, in
 }
 
 /* Create a filled triangle  */
-void drawFillTriangle ( FrameBuffer *fb, 
+void drawFillTriangle ( FrameBuffer *fb,
         int x1, int y1,
         int x2, int y2,
         int x3, int y3, Pixel color )
 {
     int a, b, y, last;
 
-    // Sort three vertices so v1 is at top 
+    // Sort three vertices so v1 is at top
     Point sorted[3];
     sortVerticesAscendingByY( sorted, x1, y1, x2, y2, x3, y3 );
 
 	// Handle case if points form a horizontal line
-    if (sorted[0].y == sorted[2].y) 
-	{ 
+    if (sorted[0].y == sorted[2].y)
+	{
         a = b = sorted[0].x;
-                        
+
         if (sorted[1].x < a)
             a = sorted[1].x;
-        else if (sorted[1].x > b) 
+        else if (sorted[1].x > b)
             b = sorted[1].x;
 
-        if (sorted[2].x < a) 
+        if (sorted[2].x < a)
             a = sorted[2].x;
-        else if (sorted[2].x > b) 
+        else if (sorted[2].x > b)
             b = sorted[2].x;
 
 		drawHorizontalLine(fb, b - a + 1, a, sorted[0].y, color);
@@ -284,7 +288,7 @@ void drawFillTriangle ( FrameBuffer *fb,
 		dy02 = sorted[2].y - sorted[0].y,
 		dx12 = sorted[2].x - sorted[1].x,
 		dy12 = sorted[2].y - sorted[1].y;
-            
+
     int32_t sa = 0, sb = 0;
 
     // For upper part of triangle, find scanline crossings for segments
@@ -293,12 +297,12 @@ void drawFillTriangle ( FrameBuffer *fb,
 	// error there), otherwise scanline y1 is skipped here and handled
 	// in the second loop...which also avoids a /0 error here if y0=y1
 	// (flat-topped triangle).
-	if (sorted[1].y == sorted[2].y) 
+	if (sorted[1].y == sorted[2].y)
 		last = sorted[1].y; // Include y1 scanline
-	else 
+	else
 		last = sorted[1].y - 1; // Skip it
-                                                          
-	for (y = sorted[0].y; y <= last; y++) 
+
+	for (y = sorted[0].y; y <= last; y++)
 	{
 		a = sorted[0].x + sa / dy01;
 		b = sorted[0].x + sb / dy02;
@@ -308,16 +312,16 @@ void drawFillTriangle ( FrameBuffer *fb,
 		a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
 		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
 		*/
-                                                                                                                                             
+
 		if ( a > b ) swap16( a, b );
 			drawHorizontalLine( fb, b - a + 1, a, y, color );
 	}
-                
+
 	// For lower part of triangle, find scanline crossings for segments
 	// 0-2 and 1-2. This loop is skipped if y1=y2.
 	sa = dx12 * ( y - sorted[1].y );
 	sb = dx02 * ( y - sorted[0].y );
-	for ( ; y <= sorted[2].y; y++ ) 
+	for ( ; y <= sorted[2].y; y++ )
 	{
 		a = sorted[1].x + sa / dy12;
 		b = sorted[0].x + sb / dy02;
@@ -327,13 +331,13 @@ void drawFillTriangle ( FrameBuffer *fb,
 		a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
 		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
 		*/
-		if ( a > b ) 
+		if ( a > b )
 			swap16( a, b );
-                
+
 		drawHorizontalLine(fb, b - a + 1, a, y, color);
 	}
 }
-                
+
 void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color)
 {
   int x = radius;
@@ -398,5 +402,29 @@ void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel
             x--;
         }
         sigma += a2 * ((4 * y) + 6);
+    }
+}
+
+int getPt( int n1 , int n2 , float perc )
+{
+    int diff = n2 - n1;
+
+    return n1 + ( diff * perc );
+}
+
+void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color) {
+    for( float i = 0 ; i < 1 ; i += 0.01 )
+    {
+        // The Green Line
+        int xa = getPt( x1 , x2 , i );
+        int ya = getPt( y1 , y2 , i );
+        int xb = getPt( x2 , x3 , i );
+        int yb = getPt( y2 , y3 , i );
+
+        // The Black Dot
+        int x = getPt( xa , xb , i );
+        int y = getPt( ya , yb , i );
+
+        setPixel(fb, x , y , color );
     }
 }

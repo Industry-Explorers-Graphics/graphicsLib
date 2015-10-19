@@ -4,7 +4,7 @@
 #include <math.h>
 
 #ifndef render_h
-#define render_h 
+#define render_h
 
 #define swap16( a, b ) { int16_t t = a; a = b; b = t; }
 
@@ -30,8 +30,14 @@ typedef struct point
 //void pointInit( Point *pt, const int x, const int y );
 
 static const Pixel PINK = { 240, 54, 87 };
+static const Pixel RED = { 250, 0, 0 };
+static const Pixel GREEN = { 0, 250, 0 };
+static const Pixel BLUE = { 0, 0, 250 };
+
 FrameBuffer *createFrameBuffer ( int width, int height );
 //Pixel getPixel(FrameBuffer * fb, int x, int y);
+
+void point(FrameBuffer * fb, int x, int y, Pixel color);
 
 void drawHorizontalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color );
 void drawVerticalLine ( FrameBuffer *fb, int length, int x,  int y, Pixel color );
@@ -45,5 +51,7 @@ void drawFillTriangle ( FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3,
 
 void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color);
 void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel color);
+
+void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color);
 
 #endif
