@@ -29,6 +29,10 @@ Pixel getPixel(FrameBuffer *fb, int x, int y) {
     Pixel color = fb -> data[offset];
     return color;
 }
+// made this for testing purposes
+void point(FrameBuffer * fb, int x, int y, Pixel color) {
+    setPixel(fb, x, y, color);
+}
 
 /* Create  a horizontal line on FrameBuffer */
 void drawHorizontalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color )
@@ -252,3 +256,28 @@ void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel
         sigma += a2 * ((4 * y) + 6);
     }
 }
+
+int getPt( int n1 , int n2 , float perc )
+{
+    int diff = n2 - n1;
+
+    return n1 + ( diff * perc );
+}
+
+void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color) {
+    for( float i = 0 ; i < 1 ; i += 0.01 )
+    {
+        // The Green Line
+        int xa = getPt( x1 , x2 , i );
+        int ya = getPt( y1 , y2 , i );
+        int xb = getPt( x2 , x3 , i );
+        int yb = getPt( y2 , y3 , i );
+
+        // The Black Dot
+        int x = getPt( xa , xb , i );
+        int y = getPt( ya , yb , i );
+
+        setPixel(fb, x , y , color );
+    }
+}
+

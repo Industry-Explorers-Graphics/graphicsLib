@@ -19,8 +19,12 @@ int main ()
     FrameBuffer *fb =  createFrameBuffer( 320, 256 );
 //    drawRect(fb, 1, 1,  100, 200, PINK);
 //    drawCircle(fb, 100, 100, 10, PINK);
-    drawEllipse(fb, 100, 100, 10, 20, PINK);
+//    drawEllipse(fb, 100, 100, 10, 20, PINK);
 //    triangle ( fb, 30, 50, 50, 20, 50, 20, 10, 20, 30, 50, 10, 20, PINK );
-    write_ppm ( "ellipse.ppm", fb );
+    point(fb, 350, 100, RED);
+    point(fb, 550, 10, GREEN);
+    point(fb, 600, 100, BLUE);
+    bezier(fb, 350, 100, 550, 10, 600, 100, PINK);
+    write_ppm ( "bezier.ppm", fb );
     return 0;
 }
