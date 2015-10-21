@@ -31,8 +31,13 @@ typedef struct point
 
 static const Pixel PINK = { 240, 54, 87 };
 static const Pixel RED = { 250, 0, 0 };
+static const Pixel ORANGE = { 255, 122, 0 };
+static const Pixel YELLOW = { 255, 211, 0 };
 static const Pixel GREEN = { 0, 250, 0 };
 static const Pixel BLUE = { 0, 0, 250 };
+static const Pixel PURPLE = { 119, 3, 173 };
+static const Pixel WHITE = { 255, 255, 255 };
+static const Pixel BLACK = { 0, 0, 0 };
 
 FrameBuffer *createFrameBuffer ( int width, int height );
 //Pixel getPixel(FrameBuffer * fb, int x, int y);
