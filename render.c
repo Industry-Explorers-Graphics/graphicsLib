@@ -17,7 +17,6 @@ FrameBuffer *createFrameBuffer ( int width, int height )
     fb->width = width;
     fb->height = height;
     fb->data = ( Pixel *) malloc( sizeof(Pixel)* width * height );
-
     return fb;
 }
 
@@ -426,5 +425,19 @@ void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pix
         int y = getPt( ya , yb , i );
 
         setPixel(fb, x , y , color );
+    }
+}
+
+int fb_contains(FrameBuffer *fb, int x, int y) {
+    return x >= (int) fb->x && x < (int) fb->x + (int)fb->width && y >=  (int) fb->y && y < (int) fb->y + fb->height;
+}
+
+void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
+    for (int col = 0; col < src->width; col++) {
+        for (int row = 0; row < src->height; row++) {
+            if (fb_contains(dst, x + col, y + row)) {
+                setPixel(dst, x + col, y + row, getPixel(src, col, row));
+           }
+        }
     }
 }

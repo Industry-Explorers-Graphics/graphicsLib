@@ -20,6 +20,8 @@ typedef struct frameBuffer
     int width;
     int height;
     Pixel *data;
+    int *x;
+    int *y;
 } FrameBuffer;
 
 typedef struct point
@@ -58,5 +60,7 @@ void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color);
 void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel color);
 
 void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color);
+
+void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y);
 
 #endif
