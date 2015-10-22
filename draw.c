@@ -17,7 +17,8 @@ void write_ppm(char *filename, FrameBuffer * fb)
 int main ()
 {
     FrameBuffer *fb =  createFrameBuffer( 320, 256 );
-//    drawRect(fb, 1, 1,  100, 200, PINK);
+    FrameBuffer *dst = createFrameBuffer(400, 340);
+//    drawFillRect(fb, 1, 1,  100, 200, PINK);
 //    drawCircle(fb, 100, 100, 10, PINK);
 //    drawEllipse(fb, 100, 100, 10, 20, PINK);
 //    triangle ( fb, 30, 50, 50, 20, 50, 20, 10, 20, 30, 50, 10, 20, PINK );
@@ -30,5 +31,7 @@ int main ()
     float vertices[] = { 10, 10, 10, 20, 20, 50, 30, 50, 30, 10 };
     polygonFill( fb, vertices, 5, PINK )
     write_ppm ( "polygon.ppm", fb );
+//    bitBlt(dst, fb, 300, 200);
+//    write_ppm ( "bitBltTest.ppm", dst );
     return 0;
 }

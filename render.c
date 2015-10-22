@@ -12,7 +12,6 @@ FrameBuffer *createFrameBuffer ( int width, int height )
     fb->width = width;
     fb->height = height;
     fb->data = ( Pixel *) malloc( sizeof(Pixel)* width * height );
-
     return fb;
 }
 
@@ -434,7 +433,7 @@ struct polygonDDA {
 	int yEnd;
 }
 
-void setupPolyDda( struct polygonDDA poly, float *vertices, int numOfVerts, int ivert, int dir )
+void setupPolyDDA( struct polygonDDA poly, float *vertices, int numOfVerts, int ivert, int dir )
 	{
 		poly.vertIndex = ivert;
 		poly.vertNext = ivert + dir;
@@ -474,10 +473,10 @@ void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, Pixel color 
 	leftDDA.yEnd = rightDDA.yEnd = y;
 
 	// setup polygon scanner for left side, starting from top
-	leftDDA.setupPolyDda( vertices, numOfVerts, vMin, +1 );
+	leftDDA.setupPolyDDA( vertices, numOfVerts, vMin, +1 );
 
 	// setup polygon scanner for right side, starting from top
-	rightDDA.setupPolyDda( vertices, numOfVerts, vMin, -1 );
+	rightDDA.setupPolyDDA( vertices, numOfVerts, vMin, -1 );
 
 	while ( true )
 	{
@@ -500,13 +499,13 @@ void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, Pixel color 
 					break;
 				}
 			}
-			leftDDA.setupPolyDda( vertices, numOfVerts, leftDDA.vertNext, +1 );	// reset left side
+			leftDDA.setupPolyDDA( vertices, numOfVerts, leftDDA.vertNext, +1 );	// reset left side
 		}
 
 		// check for right dda hitting end of polygon side
 		// if so, reset scanner
 		if ( y >= rightDDA.yEnd ) {
-			rightDDA.setupPolyDda( vertices, numOfVerts, rightDDA.vertNext, -1 );
+			rightDDA.setupPolyDDA( vertices, numOfVerts, rightDDA.vertNext, -1 );
 		}
 
 		// fill span between two line-drawers, advance drawers when
@@ -526,4 +525,18 @@ void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, Pixel color 
 			break;
 		}
 	}
+
+/* Create Bit Blt */
+int fb_contains(FrameBuffer *fb, int x, int y) {
+    return x >= (int) fb->x && x < (int) fb->x + (int)fb->width && y >=  (int) fb->y && y < (int) fb->y + fb->height;
+}
+
+void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
+    for (int col = 0; col < src->width; col++) {
+        for (int row = 0; row < src->height; row++) {
+            if (fb_contains(dst, x + col, y + row)) {
+                setPixel(dst, x + col, y + row, getPixel(src, col, row));
+           }
+        }
+    }
 }
