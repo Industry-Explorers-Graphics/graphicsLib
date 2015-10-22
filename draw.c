@@ -16,8 +16,8 @@ void write_ppm(char *filename, FrameBuffer * fb)
 /* Make the picture, store it, and go home */
 int main ()
 {
-    FrameBuffer *fb =  createFrameBuffer( 320, 256 );
-    FrameBuffer *dst = createFrameBuffer(400, 340);
+    FrameBuffer *fb =  createFrameBuffer( 620, 556, 0, 0 );
+//    FrameBuffer *dst = createFrameBuffer(400, 340, 0, 0);
 //    drawFillRect(fb, 1, 1,  100, 200, PINK);
 //    drawCircle(fb, 100, 100, 10, PINK);
 //    drawEllipse(fb, 100, 100, 10, 20, PINK);
@@ -27,10 +27,10 @@ int main ()
 //    point(fb, 600, 100, BLUE);
 //    bezier(fb, 350, 100, 550, 10, 600, 100, PINK);
 //    write_ppm ( "bezier.ppm", fb );
-//    drawFillTriangle ( fb, 30, 50, 10, 20, 50, 40, PINK );
-    float vertices[] = { 10, 10, 10, 20, 20, 50, 30, 50, 30, 10 };
-    polygonFill( fb, vertices, 5, PINK )
-    write_ppm ( "polygon.ppm", fb );
+    drawFillTriangle ( fb, 30, 50, 10, 20, 50, 40, PINK );
+//    float vertices[] = { 10, 10, 10, 20, 20, 50, 30, 50, 30, 10 };
+//    polygonFill( fb, vertices, 5, 50, PINK );
+    write_ppm ( "triangle2.ppm", fb );
 //    bitBlt(dst, fb, 300, 200);
 //    write_ppm ( "bitBltTest.ppm", dst );
     return 0;

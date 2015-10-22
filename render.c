@@ -6,11 +6,13 @@
 
 
 /* Image functions */
-FrameBuffer *createFrameBuffer ( int width, int height )
+FrameBuffer *createFrameBuffer ( int width, int height, int x, int y )
 {
     FrameBuffer *fb = ( FrameBuffer *)malloc( sizeof( FrameBuffer ));
     fb->width = width;
     fb->height = height;
+    fb->x = x;
+    fb->y = y;
     fb->data = ( Pixel *) malloc( sizeof(Pixel)* width * height );
     return fb;
 }
@@ -423,7 +425,7 @@ void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pix
     }
 }
 
-/* Create a filled Polygon with Triangulation */
+/* Create a filled Polygon with Scan-line DDA */
 struct polygonDDA {
 	int vertIndex;
 	int vertNext;
@@ -431,55 +433,79 @@ struct polygonDDA {
 	float dx;
 	int yStart;
 	int yEnd;
-}
-
-void setupPolyDDA( struct polygonDDA poly, float *vertices, int numOfVerts, int ivert, int dir )
-	{
-		poly.vertIndex = ivert;
-		poly.vertNext = ivert + dir;
-		if ( vertNext < 0 ) {
-			poly.vertNext = numOfVerts - 1;
-		}
-		else if ( poly.vertNext == numOfVerts ){
-			poly.vertNext = 0;
-		}
-
-		// set starting/ending ypos and current xpos
-		poly.yStart = poly.yEnd;
-		poly.yEnd = round(vertices[ poly.vertNext*2+1 ]);
-		poly.x = vertices[poly.vertIndex*2+0];
-
-		// Calculate fractional number of pixels to step in x (dx)
-		float xdelta = vertices[ poly.vertNext*2+0 ] -
-			vertices[ poly.vertIndex*2+0 ];
-		int ydelta = poly.yEnd - poly.yStart;
-		if (ydelta > 0) {
-			poly.dx = xdelta / ydelta;
-		}
-		else {
-			poly.dx = 0;
-		}
-	}
 };
 
-void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, Pixel color )
+void setupPolyDDA( struct polygonDDA poly, 
+        float *vertices, int numOfVerts,
+        int ivert, int dir )
+{
+    poly.vertIndex = ivert;
+    poly.vertNext = ivert + dir;
+
+    if ( poly.vertNext < 0 ) 
+    {
+        poly.vertNext = numOfVerts - 1;
+    }
+    else if ( poly.vertNext == numOfVerts ){
+        poly.vertNext = 0;
+    }
+
+    // set starting/ending ypos and current xpos
+    poly.yStart = poly.yEnd;
+    poly.yEnd = round(vertices[ poly.vertNext*2+1 ]);
+    poly.x = vertices[poly.vertIndex*2+0];
+
+    // Calculate fractional number of pixels to step in x (dx)
+    float xdelta = vertices[ poly.vertNext*2+0 ] -
+        vertices[ poly.vertIndex*2+0 ];
+    int ydelta = poly.yEnd - poly.yStart;
+
+    if (ydelta > 0) 
+    {
+        poly.dx = xdelta / ydelta;
+    }
+    else 
+    {
+        poly.dx = 0;
+    }
+}
+/* refactor this by using the findTopmostPolyVertex function that's using a point structure instead of a float for vertices */
+int findTopmostVertex( float *vertices, int numOfVerts )
+{
+    float yMin = INT32_MAX;
+    int vMin;
+    float *vertPtr = vertices;
+
+    for ( int i = 0; i < numOfVerts; i++ )
+    {
+        if ( vertPtr[1] < yMin )
+        {
+            yMin = vertPtr[1];
+            vMin = i;
+        }
+        vertPtr += 2;
+    }
+    return vMin;
+}
+
+void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, int yMax, Pixel color )
 {
 	// find topmost vertex of the polygon
 	int vMin = findTopmostVertex( vertices, numOfVerts );
 
 	// set starting line
-	polygonDDA leftDDA, rightDDA;
-	int y = int( vertices[ vMin * 2 + 1 ] );
+	struct polygonDDA leftDDA, rightDDA;
+	int y =  vertices[ vMin * 2 + 1 ];
 	leftDDA.yEnd = rightDDA.yEnd = y;
 
 	// setup polygon scanner for left side, starting from top
-	leftDDA.setupPolyDDA( vertices, numOfVerts, vMin, +1 );
+	setupPolyDDA( leftDDA, vertices, numOfVerts, vMin, +1 );
 
 	// setup polygon scanner for right side, starting from top
-	rightDDA.setupPolyDDA( vertices, numOfVerts, vMin, -1 );
-
-	while ( true )
-	{
+	setupPolyDDA( rightDDA, vertices, numOfVerts, vMin, -1 );
+	
+	for ( ;; )
+    {
 		if ( y >= leftDDA.yEnd )
 		{
 			if ( y >= rightDDA.yEnd )
@@ -499,32 +525,35 @@ void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, Pixel color 
 					break;
 				}
 			}
-			leftDDA.setupPolyDDA( vertices, numOfVerts, leftDDA.vertNext, +1 );	// reset left side
+			setupPolyDDA( leftDDA, vertices, numOfVerts, leftDDA.vertNext, +1 );	// reset left side
 		}
 
 		// check for right dda hitting end of polygon side
 		// if so, reset scanner
-		if ( y >= rightDDA.yEnd ) {
-			rightDDA.setupPolyDDA( vertices, numOfVerts, rightDDA.vertNext, -1 );
+		if ( y >= rightDDA.yEnd ) 
+        {
+			setupPolyDDA( rightDDA, vertices, numOfVerts, rightDDA.vertNext, -1 );
 		}
 
 		// fill span between two line-drawers, advance drawers when
 		// hit vertices
-		if ( y >= fb->y ) {
-      int length = round( rightDDA.x ) - round( leftDDA.x );
+		if ( y >= yMax ) 
+        {
+            int length = round( rightDDA.x ) - round( leftDDA.x );
 			drawHorizontalLine( fb, length, round( leftDDA.x ), y, color );
 		}
 
 		leftDDA.x += leftDDA.dx;
 		rightDDA.x += rightDDA.dx;
 
-		// Advance y position.  Exit if run off its bottom
+		// Advance y position.  Exit if run off polygon bottom
 		y += 1;
-		if ( y >= fb->y + fb->height )
+		if ( y >= yMax )
 		{
 			break;
 		}
 	}
+}
 
 /* Create Bit Blt */
 int fb_contains(FrameBuffer *fb, int x, int y) {
