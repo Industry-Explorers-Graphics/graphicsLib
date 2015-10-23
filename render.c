@@ -6,14 +6,26 @@
 
 
 /* Image functions */
-FrameBuffer *createFrameBuffer ( int width, int height, int x, int y )
+FrameBuffer *createFrameBuffer ( int width, int height, int x, int y, Pixel *data, int ownsData, int pixelStride )
 {
     FrameBuffer *fb = ( FrameBuffer *)malloc( sizeof( FrameBuffer ));
     fb->width = width;
     fb->height = height;
     fb->x = x;
     fb->y = y;
-    fb->data = ( Pixel *) malloc( sizeof(Pixel)* width * height );
+
+    if ( data != NULL )
+    {
+        fb->data = data;
+        fb->ownsData = 0; // why 0?
+        fb->pixelStride = pixelStride;
+    }
+    else
+    {
+        fb->data = ( Pixel *) malloc( sizeof( Pixel )* width * height );
+        fb->ownsData = 1;
+        fb->pixelStride = width;
+    }
     return fb;
 }
 
@@ -556,16 +568,20 @@ void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, int yMax, Pi
 }
 
 /* Create Bit Blt */
-int fb_contains(FrameBuffer *fb, int x, int y) {
+int fb_contains(FrameBuffer *fb, int x, int y) 
+{
     return x >= (int) fb->x && x < (int) fb->x + (int)fb->width && y >=  (int) fb->y && y < (int) fb->y + fb->height;
 }
 
-void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
-    for (int col = 0; col < src->width; col++) {
-        for (int row = 0; row < src->height; row++) {
-            if (fb_contains(dst, x + col, y + row)) {
-                setPixel(dst, x + col, y + row, getPixel(src, col, row));
-           }
-        }
+void bitBlt( FrameBuffer *dst, int dstx, int dsty, FrameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight ) 
+{
+    for (int col = srcx; col < src->width; col++) 
+    {
+        for (int row = srcy; row < src->height; row++) 
+        {
+            if (fb_contains(dst, dstx + col, dsty + row)) 
+                setPixel(dst, dstx + col, dsty + row, getPixel(src, col, row));
+        }     
     }
+    
 }

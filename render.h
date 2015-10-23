@@ -19,9 +19,11 @@ typedef struct frameBuffer
 {
     int width;
     int height;
-    Pixel *data;
     int x;
     int y;
+    Pixel *data;
+    int ownsData;
+    int pixelStride;
 } FrameBuffer;
 
 /* Create a point */
@@ -41,7 +43,7 @@ static const Pixel PURPLE = { 119, 3, 173 };
 static const Pixel WHITE = { 255, 255, 255 };
 static const Pixel BLACK = { 0, 0, 0 };
 
-FrameBuffer *createFrameBuffer ( int width, int height, int x, int y );
+FrameBuffer *createFrameBuffer ( int width, int height, int x, int y, Pixel *data, int ownData, int pixelStride );
 //Pixel getPixel(FrameBuffer * fb, int x, int y);
 
 void point(FrameBuffer * fb, int x, int y, Pixel color);
@@ -63,6 +65,6 @@ void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pix
 
 void polygonFill( FrameBuffer *fb, float *vertices, int numOfVerts, int yMax, Pixel color);
 
-void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y);
+void bitBlt(FrameBuffer *dst, int dstx, int dsty, FrameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight );
 
 #endif
