@@ -2,4 +2,5 @@
 *.ppm
 *.out
 *.idea
+*.so
 *.o
