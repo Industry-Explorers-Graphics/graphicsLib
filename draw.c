@@ -43,7 +43,7 @@ int main ()
     drawTriangleFill( fb7, 30, 50, 10, 20, 50, 40, PINK );
     write_ppm( "triangleFrame.ppm", fb7 );
 
-    bitBlt(dst, 3, 2, fb7, 10, 20, 60, 60 );
+    bitBlt(dst, 20, 30, fb7, 10, 20, 60, 60 );
     write_ppm ( "bitBltTest.ppm", dst );
 
     frameBuffer *fb8 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );

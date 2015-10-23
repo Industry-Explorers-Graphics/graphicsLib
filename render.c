@@ -480,7 +480,7 @@ void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
 }
 */
 
-void drawText(FrameBuffer *fb, int px, int py, char* text, Pixel color) {
+void drawText(frameBuffer *fb, int px, int py, char* text, pixel color) {
     // change to global font width and height defined in file
     px = px* 8;
     py = py* 15;
