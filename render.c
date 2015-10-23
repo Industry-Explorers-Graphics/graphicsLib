@@ -444,9 +444,6 @@ void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pix
 //}
 
 
-
-
-
 void drawText(FrameBuffer *fb, int px, int py, char* text, Pixel color) {
     // change to global font width and height defined in file
     px = px* 8;
