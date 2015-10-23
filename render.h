@@ -12,7 +12,7 @@
 /* Create the pixel bytes */
 typedef struct _pixel
 {
-    uint8_t r, g, b;
+    uint8_t r, g, b, a;
 } pixel;
 
 typedef struct _frameBuffer
@@ -26,19 +26,17 @@ typedef struct _frameBuffer
     int pixelStride;
 } frameBuffer;
 
-static const pixel PINK = { 240, 54, 87 };
-static const pixel RED = { 250, 0, 0 };
-static const pixel ORANGE = { 255, 122, 0 };
-static const pixel YELLOW = { 255, 211, 0 };
-static const pixel GREEN = { 0, 250, 0 };
-static const pixel BLUE = { 0, 0, 250 };
-static const pixel PURPLE = { 119, 3, 173 };
-static const pixel WHITE = { 255, 255, 255 };
-static const pixel BLACK = { 0, 0, 0 };
+static const pixel PINK = { 240, 54, 87, 1 };
+static const pixel RED = { 250, 0, 0, 1 };
+static const pixel ORANGE = { 255, 122, 0, 1 };
+static const pixel YELLOW = { 255, 211, 0, 1 };
+static const pixel GREEN = { 0, 250, 0, 1 };
+static const pixel BLUE = { 0, 0, 250, 1 };
+static const pixel PURPLE = { 119, 3, 173, 1 };
+static const pixel WHITE = { 255, 255, 255, 1 };
+static const pixel BLACK = { 0, 0, 0, 1 };
 
 frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int ownsData, int pixelStride );
-//pixel getpixel(frameBuffer * fb, int x, int y);
-//void points( frameBuffer * fb, int x, int y, pixel color );
 
 void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color );
 void drawVerticalLine( frameBuffer *fb, int length, int x,  int y, pixel color );
@@ -58,5 +56,7 @@ void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pi
 //void polygonFill( frameBuffer *fb, float *vertices, int numOfVerts, int yMax, pixel color);
 
 void bitBlt(frameBuffer *dst, int dstx, int dsty, frameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight );
+
+void drawText(FrameBuffer *fb, int px, int py, char text[], Pixel color);
 
 #endif

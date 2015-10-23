@@ -4,7 +4,7 @@ CFLAGS	= -Wall
 
 TARGET 	= draw.so
 SOURCES	= render.c draw.c
-HEADERS	= render.h
+HEADERS	= render.h font.h
 OBJECTS	= $(SOURCES:.c=.o)
 
 all:	
