@@ -10,57 +10,50 @@
 
 /* Image parameters */
 /* Create the pixel bytes */
-typedef struct pixel
+typedef struct _pixel
 {
     uint8_t r, g, b;
-} Pixel;
+} pixel;
 
-typedef struct frameBuffer
+typedef struct _frameBuffer
 {
     int width;
     int height;
-    Pixel *data;
+    pixel *data;
     int *x;
     int *y;
-} FrameBuffer;
+} frameBuffer;
 
-typedef struct point
-{
-    int x, y;
-} Point;
+static const pixel PINK = { 240, 54, 87 };
+static const pixel RED = { 250, 0, 0 };
+static const pixel ORANGE = { 255, 122, 0 };
+static const pixel YELLOW = { 255, 211, 0 };
+static const pixel GREEN = { 0, 250, 0 };
+static const pixel BLUE = { 0, 0, 250 };
+static const pixel PURPLE = { 119, 3, 173 };
+static const pixel WHITE = { 255, 255, 255 };
+static const pixel BLACK = { 0, 0, 0 };
 
-//void pointInit( Point *pt, const int x, const int y );
+frameBuffer *createFrameBuffer( int width, int height );
+//pixel getpixel(frameBuffer * fb, int x, int y);
 
-static const Pixel PINK = { 240, 54, 87 };
-static const Pixel RED = { 250, 0, 0 };
-static const Pixel ORANGE = { 255, 122, 0 };
-static const Pixel YELLOW = { 255, 211, 0 };
-static const Pixel GREEN = { 0, 250, 0 };
-static const Pixel BLUE = { 0, 0, 250 };
-static const Pixel PURPLE = { 119, 3, 173 };
-static const Pixel WHITE = { 255, 255, 255 };
-static const Pixel BLACK = { 0, 0, 0 };
+//void points( frameBuffer * fb, int x, int y, pixel color );
 
-FrameBuffer *createFrameBuffer ( int width, int height );
-//Pixel getPixel(FrameBuffer * fb, int x, int y);
+void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color );
+void drawVerticalLine( frameBuffer *fb, int length, int x,  int y, pixel color );
+void drawDiagonalLine( frameBuffer *fb, int x1, int y1, int x2, int y2, pixel color );
 
-void point(FrameBuffer * fb, int x, int y, Pixel color);
+void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel color );
+void drawRectFill( frameBuffer * fb, int x, int y, int width, int height, pixel color );
 
-void drawHorizontalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color );
-void drawVerticalLine ( FrameBuffer *fb, int length, int x,  int y, Pixel color );
-void drawDiagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel color );
+void drawTriangleFrame( frameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, int cx1,  int cy1, int cx2, int cy2, pixel color );
+void drawTriangleFill( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
 
-void drawSquaredRect ( FrameBuffer *fb, int length, int width, int x, int y, Pixel color );
-void drawFillRect(FrameBuffer * fb, int x, int y, int width, int height, Pixel color);
+void drawCircleFrame( frameBuffer *fb, int x0, int y0, int radius, pixel color );
+void drawEllipseFrame( frameBuffer * fb, int xc, int yc, int width, int height, pixel color );
 
-void drawTriangle ( FrameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, int cx1,  int cy1, int cx2, int cy2, Pixel color );
-void drawFillTriangle ( FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color );
+void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
 
-void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color);
-void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel color);
-
-void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color);
-
-void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y);
+void bitBlt( frameBuffer *dst, frameBuffer *src, int x, int y );
 
 #endif

@@ -4,24 +4,18 @@
 #include <math.h>
 #include "render.h"
 
-//void pointInit ( Point *pt, const int x, const int y )
-//{
-  //  pt->x = x;
-    //pt->y = y;
-//}
-
 /* Image functions */
-FrameBuffer *createFrameBuffer ( int width, int height )
+frameBuffer *createFrameBuffer( int width, int height )
 {
-    FrameBuffer *fb = ( FrameBuffer *)malloc( sizeof( FrameBuffer ));
+    frameBuffer *fb = ( frameBuffer * )malloc( sizeof( frameBuffer ) );
     fb->width = width;
     fb->height = height;
-    fb->data = ( Pixel *) malloc( sizeof(Pixel)* width * height );
+    fb->data = ( pixel * ) malloc( sizeof( pixel )* width * height );
     return fb;
 }
 
 /* With given x and y coordinates, give the pixels a color  */
-void setPixel ( FrameBuffer *fb, int x, int y, Pixel color )
+void setPixel( frameBuffer *fb, int x, int y, pixel color )
 {
     int offset = y * fb->width + x;
     fb->data[offset] = color;
@@ -29,18 +23,18 @@ void setPixel ( FrameBuffer *fb, int x, int y, Pixel color )
 
 /* Does this work? */
 /* Will need to be changed once we get rid of the pixel struct anyway */
-Pixel getPixel(FrameBuffer *fb, int x, int y) {
+pixel getPixel( frameBuffer *fb, int x, int y ) {
     int offset = y * fb-> width + x;
-    Pixel color = fb -> data[offset];
+    pixel color = fb -> data[offset];
     return color;
 }
 // made this for testing purposes
-void point(FrameBuffer * fb, int x, int y, Pixel color) {
-    setPixel(fb, x, y, color);
+void points( frameBuffer * fb, int x, int y, pixel color ) {
+    setPixel( fb, x, y, color );
 }
 
-/* Create  a horizontal line on FrameBuffer */
-void drawHorizontalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color )
+/* Create  a horizontal line on frameBuffer */
+void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color )
 {
     for( int i = x; i < ( x + length ); i++ )
     {
@@ -49,7 +43,7 @@ void drawHorizontalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color
 }
 
 /* Draw a vertical line */
-void drawVerticalLine ( FrameBuffer *fb, int length, int x, int y, Pixel color )
+void drawVerticalLine( frameBuffer *fb, int length, int x, int y, pixel color )
 {
     for( int i = y; i < ( y + length ); i++ )
     {
@@ -75,7 +69,7 @@ int sign( int number )
     }
 }
 
-void drawDiagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel color )
+void drawDiagonalLine( frameBuffer *fb, int x1, int y1, int x2, int y2, pixel color )
 {
 
     int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, xStart, yStart;
@@ -129,7 +123,7 @@ void drawDiagonalLine ( FrameBuffer *fb, int x1, int y1, int x2, int y2, Pixel c
 
 /* Draw a rectangle with square corners*/
 /* outline of rect function */
-void drawSquaredRect ( FrameBuffer *fb, int length, int width, int x, int y, Pixel color )
+void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel color )
 {
    if ( length > 0 && width > 0 )
    {
@@ -150,20 +144,26 @@ void drawSquaredRect ( FrameBuffer *fb, int length, int width, int x, int y, Pix
 
 /* Create a rectangle with rounded corners  */
 
-void drawFillRect(FrameBuffer * fb, int x, int y, int width, int height, Pixel color)
+void drawRectFill( frameBuffer * fb, int x, int y, int width, int height, pixel color )
 {
-    for (int i = x; i <= (x + width); i++)
+    for ( int i = x; i <= ( x + width ); i++ )
     {
-        drawVerticalLine(fb, i, y, height, color);
+        drawVerticalLine( fb, i, y, height, color );
     }
 }
 
 /* Create a triangle using the diagonal line function */
 // Order is important for this implementation!
-void drawTriangle ( FrameBuffer *fb,
+
+typedef struct _point
+{
+    int x, y;
+} point;
+
+void drawTriangleFrame( frameBuffer *fb,
         int ax1, int ay1, int ax2, int ay2,
         int bx1, int by1, int bx2, int by2,
-        int cx1,  int cy1, int cx2, int cy2, Pixel color )
+        int cx1,  int cy1, int cx2, int cy2, pixel color )
 {
     drawDiagonalLine( fb, ax1, ay1, ax2, ay2, color );
     drawDiagonalLine( fb, bx1, by1, bx2, by2, color );
@@ -171,7 +171,7 @@ void drawTriangle ( FrameBuffer *fb,
 }
 
 /* Find the topmost vertex ( the one with the smallest y value ) of a polygon*/
-int findTopmostPolyVertex( Point *poly, size_t numberOfElements )
+int findTopmostPolyVertex( point *poly, size_t numberOfElements )
 {
     int yMin = INT32_MAX;
     int vertexMin = 0;
@@ -183,7 +183,7 @@ int findTopmostPolyVertex( Point *poly, size_t numberOfElements )
         // If the y value of the current index is less
         // than the current value of yMin
         // set vertexMin to be the value at the idx location
-        if (poly[idx].y < yMin )
+        if ( poly[idx].y < yMin )
         {
             yMin = poly[idx].y;
             vertexMin = idx;
@@ -195,21 +195,21 @@ int findTopmostPolyVertex( Point *poly, size_t numberOfElements )
 }
 
 /* Sort Vertices by Ascending Y values */
-void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, int x3, int y3 )
+void sortVerticesAscendingByY( point *sorted, int x1, int y1, int x2, int y2, int x3, int y3 )
 {
-    Point vertices[3] = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
+    point vertices[3] = { { x1, y1 }, { x2, y2 }, { x3, y3 } };
 
     int topmost = findTopmostPolyVertex( vertices, 3 );
 
-    // The topmost vertex should be the first Point
+    // The topmost vertex should be the first point
     sorted[0].x = vertices[topmost].x;
     sorted[0].y = vertices[topmost].y;
 
     // Sort the remaining two vertices
-    switch (topmost)
+    switch ( topmost )
     {
         case 0:
-            if (vertices[1].y < vertices[2].y)
+            if ( vertices[1].y < vertices[2].y )
             {
                 sorted[1].x = vertices[1].x; sorted[1].y = vertices[1].y;
                 sorted[2].x = vertices[2].x; sorted[2].y = vertices[2].y;
@@ -222,7 +222,7 @@ void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, in
             break;
 
         case 1:
-            if (vertices[0].y < vertices[2].y)
+            if ( vertices[0].y < vertices[2].y )
             {
                 sorted[1].x = vertices[0].x; sorted[1].y = vertices[0].y;
                 sorted[2].x = vertices[2].x; sorted[2].y = vertices[2].y;
@@ -235,7 +235,7 @@ void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, in
             break;
 
         case 2:
-           if (vertices[0].y < vertices[1].y)
+           if ( vertices[0].y < vertices[1].y )
            {
                sorted[1].x = vertices[0].x; sorted[1].y = vertices[0].y;
                sorted[2].x = vertices[1].x; sorted[2].y = vertices[1].y;
@@ -250,33 +250,33 @@ void sortVerticesAscendingByY( Point *sorted, int x1, int y1, int x2, int y2, in
 }
 
 /* Create a filled triangle  */
-void drawFillTriangle ( FrameBuffer *fb,
+void drawTriangleFill( frameBuffer *fb,
         int x1, int y1,
         int x2, int y2,
-        int x3, int y3, Pixel color )
+        int x3, int y3, pixel color )
 {
     int a, b, y, last;
 
     // Sort three vertices so v1 is at top
-    Point sorted[3];
+    point sorted[3];
     sortVerticesAscendingByY( sorted, x1, y1, x2, y2, x3, y3 );
 
 	// Handle case if points form a horizontal line
-    if (sorted[0].y == sorted[2].y)
+    if ( sorted[0].y == sorted[2].y )
 	{
         a = b = sorted[0].x;
 
-        if (sorted[1].x < a)
+        if ( sorted[1].x < a )
             a = sorted[1].x;
-        else if (sorted[1].x > b)
+        else if ( sorted[1].x > b )
             b = sorted[1].x;
 
-        if (sorted[2].x < a)
+        if ( sorted[2].x < a )
             a = sorted[2].x;
-        else if (sorted[2].x > b)
+        else if ( sorted[2].x > b )
             b = sorted[2].x;
 
-		drawHorizontalLine(fb, b - a + 1, a, sorted[0].y, color);
+		drawHorizontalLine( fb, b - a + 1, a, sorted[0].y, color );
         return;
     }
 
@@ -291,25 +291,25 @@ void drawFillTriangle ( FrameBuffer *fb,
     int32_t sa = 0, sb = 0;
 
     // For upper part of triangle, find scanline crossings for segments
-    // 0-1 and 0-2. If y1=y2 (flat-bottomed triangle), the scanline y1
-	// is included here (and second loop will be skipped, avoiding a /0
-	// error there), otherwise scanline y1 is skipped here and handled
+    // 0-1 and 0-2. If y1=y2 ( flat-bottomed triangle ), the scanline y1
+	// is included here ( and second loop will be skipped, avoiding a /0
+	// error there ), otherwise scanline y1 is skipped here and handled
 	// in the second loop...which also avoids a /0 error here if y0=y1
-	// (flat-topped triangle).
-	if (sorted[1].y == sorted[2].y)
+	// ( flat-topped triangle ).
+	if ( sorted[1].y == sorted[2].y )
 		last = sorted[1].y; // Include y1 scanline
 	else
 		last = sorted[1].y - 1; // Skip it
 
-	for (y = sorted[0].y; y <= last; y++)
+	for ( y = sorted[0].y; y <= last; y++ )
 	{
 		a = sorted[0].x + sa / dy01;
 		b = sorted[0].x + sb / dy02;
 		sa += dx01;
 		sb += dx02;
 		/* longhand:
-		a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
-		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
+		a = x0 + ( x1 - x0 ) * ( y - y0 ) / ( y1 - y0 );
+		b = x0 + ( x2 - x0 ) * ( y - y0 ) / ( y2 - y0 );
 		*/
 
 		if ( a > b ) swap16( a, b );
@@ -327,17 +327,17 @@ void drawFillTriangle ( FrameBuffer *fb,
 		sa += dx12;
 		sb += dx02;
 		/* longhand:
-		a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
-		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
+		a = x1 + ( x2 - x1 ) * ( y - y1 ) / ( y2 - y1 );
+		b = x0 + ( x2 - x0 ) * ( y - y0 ) / ( y2 - y0 );
 		*/
 		if ( a > b )
 			swap16( a, b );
 
-		drawHorizontalLine(fb, b - a + 1, a, y, color);
+		drawHorizontalLine( fb, b - a + 1, a, y, color );
 	}
 }
 
-void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color)
+void drawCircleFrame( frameBuffer *fb, int x0, int y0, int radius, pixel color )
 {
   int x = radius;
   int y = 0;
@@ -345,28 +345,28 @@ void drawCircle(FrameBuffer *fb, int x0, int y0, int radius, Pixel color)
 
   while( y <= x )
   {
-    setPixel(fb,  x + x0,  y + y0, color); // Octant 1
-    setPixel(fb,  y + x0,  x + y0, color); // Octant 2
-    setPixel(fb, -x + x0,  y + y0, color); // Octant 4
-    setPixel(fb, -y + x0,  x + y0, color); // Octant 3
-    setPixel(fb, -x + x0, -y + y0, color); // Octant 5
-    setPixel(fb, -y + x0, -x + y0, color); // Octant 6
-    setPixel(fb,  x + x0, -y + y0, color); // Octant 8
-    setPixel(fb,  y + x0, -x + y0, color); // Octant 7
+    setPixel( fb,  x + x0,  y + y0, color ); // Octant 1
+    setPixel( fb,  y + x0,  x + y0, color ); // Octant 2
+    setPixel( fb, -x + x0,  y + y0, color ); // Octant 4
+    setPixel( fb, -y + x0,  x + y0, color ); // Octant 3
+    setPixel( fb, -x + x0, -y + y0, color ); // Octant 5
+    setPixel( fb, -y + x0, -x + y0, color ); // Octant 6
+    setPixel( fb,  x + x0, -y + y0, color ); // Octant 8
+    setPixel( fb,  y + x0, -x + y0, color ); // Octant 7
     y++;
-    if (decisionOver2<=0)
+    if ( decisionOver2<=0 )
     {
       decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
     }
     else
     {
       x--;
-      decisionOver2 += 2 * (y - x) + 1;   // Change for y -> y+1, x -> x-1
+      decisionOver2 += 2 * ( y - x ) + 1;   // Change for y -> y+1, x -> x-1
     }
   }
 }
 
-void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel color)
+void drawEllipseFrame( frameBuffer * fb, int xc, int yc, int width, int height, pixel color )
 {
     int a2 = width * width;
     int b2 = height * height;
@@ -374,33 +374,33 @@ void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel
     int x, y, sigma;
 
     /* first half */
-    for (x = 0, y = height, sigma = 2*b2+a2*(1-2*height); b2*x <= a2*y; x++)
+    for ( x = 0, y = height, sigma = 2 * b2 + a2 * ( 1-2 * height ); b2 * x <= a2 * y; x++ )
     {
-        setPixel(fb, xc + x, yc + y, color);
-        setPixel(fb, xc - x, yc + y, color);
-        setPixel(fb, xc + x, yc - y, color);
-        setPixel(fb, xc - x, yc - y, color);
-        if (sigma >= 0)
+        setPixel( fb, xc + x, yc + y, color );
+        setPixel( fb, xc - x, yc + y, color );
+        setPixel( fb, xc + x, yc - y, color );
+        setPixel( fb, xc - x, yc - y, color );
+        if ( sigma >= 0 )
         {
-            sigma += fa2 * (1 - y);
+            sigma += fa2 * ( 1 - y );
             y--;
         }
-        sigma += b2 * ((4 * x) + 6);
+        sigma += b2 * ( ( 4 * x ) + 6 );
     }
 
     /* second half */
-    for (x = width, y = 0, sigma = 2*a2+b2*(1-2*width); a2*y <= b2*x; y++)
+    for ( x = width, y = 0, sigma = 2 * a2 + b2 * ( 1-2 * width ); a2 * y <= b2 * x; y++ )
     {
-        setPixel(fb, xc + x, yc + y, color);
-        setPixel(fb, xc - x, yc + y, color);
-        setPixel(fb, xc + x, yc - y, color);
-        setPixel(fb, xc - x, yc - y, color);
-        if (sigma >= 0)
+        setPixel( fb, xc + x, yc + y, color );
+        setPixel( fb, xc - x, yc + y, color );
+        setPixel( fb, xc + x, yc - y, color );
+        setPixel( fb, xc - x, yc - y, color );
+        if ( sigma >= 0 )
         {
-            sigma += fb2 * (1 - x);
+            sigma += fb2 * ( 1 - x );
             x--;
         }
-        sigma += a2 * ((4 * y) + 6);
+        sigma += a2 * ( ( 4 * y ) + 6 );
     }
 }
 
@@ -411,7 +411,7 @@ int getPt( int n1 , int n2 , float perc )
     return n1 + ( diff * perc );
 }
 
-void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color) {
+void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color ) {
     for( float i = 0 ; i < 1 ; i += 0.01 )
     {
         // The Green Line
@@ -424,19 +424,21 @@ void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pix
         int x = getPt( xa , xb , i );
         int y = getPt( ya , yb , i );
 
-        setPixel(fb, x , y , color );
+        setPixel( fb, x , y , color );
     }
 }
 
-int fb_contains(FrameBuffer *fb, int x, int y) {
-    return x >= (int) fb->x && x < (int) fb->x + (int)fb->width && y >=  (int) fb->y && y < (int) fb->y + fb->height;
+int fb_contains( frameBuffer *fb, int x, int y ) 
+{
+    return x >= ( int ) fb->x && x < ( int ) fb->x + ( int )fb->width && y >=  ( int ) fb->y && y < ( int ) fb->y + fb->height;
 }
 
-void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
-    for (int col = 0; col < src->width; col++) {
-        for (int row = 0; row < src->height; row++) {
-            if (fb_contains(dst, x + col, y + row)) {
-                setPixel(dst, x + col, y + row, getPixel(src, col, row));
+void bitBlt( frameBuffer *dst, frameBuffer *src, int x, int y ) 
+{
+    for ( int col = 0; col < src->width; col++ ) {
+        for ( int row = 0; row < src->height; row++ ) {
+            if ( fb_contains( dst, x + col, y + row ) ) {
+                setPixel( dst, x + col, y + row, getPixel( src, col, row ) );
            }
         }
     }
