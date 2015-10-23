@@ -20,8 +20,10 @@ typedef struct _frameBuffer
     int width;
     int height;
     pixel *data;
-    int *x;
-    int *y;
+    int x;
+    int y;
+    int ownsData;
+    int pixelStride;
 } frameBuffer;
 
 static const pixel PINK = { 240, 54, 87 };
@@ -34,9 +36,8 @@ static const pixel PURPLE = { 119, 3, 173 };
 static const pixel WHITE = { 255, 255, 255 };
 static const pixel BLACK = { 0, 0, 0 };
 
-frameBuffer *createFrameBuffer( int width, int height );
+frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int ownsData, int pixelStride );
 //pixel getpixel(frameBuffer * fb, int x, int y);
-
 //void points( frameBuffer * fb, int x, int y, pixel color );
 
 void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color );
@@ -54,6 +55,8 @@ void drawEllipseFrame( frameBuffer * fb, int xc, int yc, int width, int height, 
 
 void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
 
-void bitBlt( frameBuffer *dst, frameBuffer *src, int x, int y );
+//void polygonFill( frameBuffer *fb, float *vertices, int numOfVerts, int yMax, pixel color);
+
+void bitBlt(frameBuffer *dst, int dstx, int dsty, frameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight );
 
 #endif

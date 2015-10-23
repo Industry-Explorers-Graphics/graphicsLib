@@ -5,12 +5,27 @@
 #include "render.h"
 
 /* Image functions */
-frameBuffer *createFrameBuffer( int width, int height )
+frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int ownsData, int pixelStride )
 {
     frameBuffer *fb = ( frameBuffer * )malloc( sizeof( frameBuffer ) );
     fb->width = width;
     fb->height = height;
     fb->data = ( pixel * ) malloc( sizeof( pixel )* width * height );
+    fb->x = x;
+    fb->y = y;
+
+    if ( data != NULL )
+    {
+        fb->data = data;
+        fb->ownsData = 0; // why 0?
+        fb->pixelStride = pixelStride;
+    }
+    else
+    {
+        fb->data = ( pixel *) malloc( sizeof( pixel )* width * height );
+        fb->ownsData = 1;
+        fb->pixelStride = width;
+    }
     return fb;
 }
 
@@ -177,18 +192,18 @@ int findTopmostPolyVertex( point *poly, size_t numberOfElements )
     int vertexMin = 0;
 
     // Create an iterator
-    size_t idx = 0;
-    while ( idx < numberOfElements )
+    size_t i = 0;
+    while ( i < numberOfElements )
     {
         // If the y value of the current index is less
         // than the current value of yMin
         // set vertexMin to be the value at the idx location
-        if ( poly[idx].y < yMin )
+        if (poly[i].y < yMin )
         {
-            yMin = poly[idx].y;
-            vertexMin = idx;
+            yMin = poly[i].y;
+            vertexMin = i;
         }
-        idx++;
+        i++;
     }
 
     return vertexMin;
@@ -428,18 +443,21 @@ void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pi
     }
 }
 
-int fb_contains( frameBuffer *fb, int x, int y ) 
+/* Create Bit Blt */
+int fb_contains(frameBuffer *fb, int x, int y)
 {
-    return x >= ( int ) fb->x && x < ( int ) fb->x + ( int )fb->width && y >=  ( int ) fb->y && y < ( int ) fb->y + fb->height;
+    return x >= (int) fb->x && x < (int) fb->x + (int)fb->width && y >=  (int) fb->y && y < (int) fb->y + fb->height;
 }
 
-void bitBlt( frameBuffer *dst, frameBuffer *src, int x, int y ) 
+void bitBlt( frameBuffer *dst, int dstx, int dsty, frameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight )
 {
-    for ( int col = 0; col < src->width; col++ ) {
-        for ( int row = 0; row < src->height; row++ ) {
-            if ( fb_contains( dst, x + col, y + row ) ) {
-                setPixel( dst, x + col, y + row, getPixel( src, col, row ) );
-           }
+    for (int col = srcx; col < src->width; col++)
+    {
+        for (int row = srcy; row < src->height; row++)
+        {
+            if (fb_contains(dst, dstx + col, dsty + row))
+                setPixel(dst, dstx + col, dsty + row, getPixel(src, col, row));
         }
     }
+
 }
