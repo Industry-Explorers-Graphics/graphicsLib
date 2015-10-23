@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <math.h>
 #include "render.h"
+#include "font.h"
 
 //void pointInit ( Point *pt, const int x, const int y )
 //{
@@ -428,16 +429,47 @@ void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pix
     }
 }
 
-int fb_contains(FrameBuffer *fb, int x, int y) {
-    return x >= (int) fb->x && x < (int) fb->x + (int)fb->width && y >=  (int) fb->y && y < (int) fb->y + fb->height;
-}
+//int fb_contains(FrameBuffer *fb, int x, int y) {
+//    return x >= (int) fb->x && x < (int) fb->x + (int)fb->width && y >=  (int) fb->y && y < (int) fb->y + fb->height;
+//}
+//
+//void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
+//    for (int col = 0; col < src->width; col++) {
+//        for (int row = 0; row < src->height; row++) {
+//            if (fb_contains(dst, x + col, y + row)) {
+//                setPixel(dst, x + col, y + row, getPixel(src, col, row));
+//           }
+//        }
+//    }
+//}
 
-void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
-    for (int col = 0; col < src->width; col++) {
-        for (int row = 0; row < src->height; row++) {
-            if (fb_contains(dst, x + col, y + row)) {
-                setPixel(dst, x + col, y + row, getPixel(src, col, row));
-           }
-        }
+
+
+
+
+void drawText(FrameBuffer *fb, int px, int py, char* text, Pixel color) {
+    // change to global font width and height defined in file
+    px = px* 8;
+    py = py* 15;
+
+    for (int c = 0; text[c] != '\0'; c++ )
+    {
+            for (int i = 0; i < 15; i += 1)
+            {
+                int sym = iso_font[text[c]*16+i];
+
+                int x = px;
+                int y = py + i;
+
+                for (int ii =0; ii < 8; ii++)
+                {
+                    x+=1;
+                    if ((sym & (1 << ii)))
+                    {
+                       setPixel(fb, x, y, color);
+                    }
+                }
+            }
+            px+=8;
     }
 }

@@ -20,8 +20,8 @@ typedef struct frameBuffer
     int width;
     int height;
     Pixel *data;
-    int *x;
-    int *y;
+//    int *x;
+//    int *y;
 } FrameBuffer;
 
 typedef struct point
@@ -29,15 +29,14 @@ typedef struct point
     int x, y;
 } Point;
 
-//void pointInit( Point *pt, const int x, const int y );
-
 static const Pixel PINK = { 240, 54, 87 };
 static const Pixel RED = { 250, 0, 0 };
 static const Pixel GREEN = { 0, 250, 0 };
 static const Pixel BLUE = { 0, 0, 250 };
 
+
+
 FrameBuffer *createFrameBuffer ( int width, int height );
-//Pixel getPixel(FrameBuffer * fb, int x, int y);
 
 void point(FrameBuffer * fb, int x, int y, Pixel color);
 
@@ -57,5 +56,7 @@ void drawEllipse (FrameBuffer * fb, int xc, int yc, int width, int height, Pixel
 void bezier(FrameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, Pixel color);
 
 void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y);
+
+void drawText(FrameBuffer *fb, int px, int py, char text[], Pixel color);
 
 #endif
