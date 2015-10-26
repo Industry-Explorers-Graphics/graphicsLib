@@ -51,5 +51,6 @@ int main ()
     drawText(fb8, 2, 10, str, GREEN);
     write_ppm ( "text.ppm", fb8 );
 
+    // create a test for the coverPixel function
     return 0;
 }

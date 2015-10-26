@@ -49,6 +49,40 @@ void points( frameBuffer * fb, int x, int y, pixel color ) {
     setPixel( fb, x, y, color );
 }
 
+/* Create a pixel cover function for blending */
+void coverPixel( frameBuffer *fb, int x, int y, pixel color )
+{
+  uint8_t alpha = color.a;
+
+	// Quick reject if the foreground pixel has both 0 opacity
+	// and 0 for color component values
+	if ( 0 == color.r && 0 == color.g && 0 == color.b && 0 == color.a ) {
+		return;
+	}
+
+	if ( 0 == alpha ) {
+		// Combine the colors, but don't
+		// change the alpha of the background
+	} else if ( 255 == alpha ) {
+		// The foreground opacity is full, so set
+		// the color
+		// and set the background alpha to full as well
+		setPixel( fb, x, y, color );
+	} else {
+		// All other cases where doing a cover of something
+		// other than full opacity
+		pixel dstPixel = getPixel( fb, x, y );
+
+		pixel dstColor = {
+      lerp255( dstPixel.r, color.r, alpha ),
+      lerp255( dstPixel.g, color.g, alpha ),
+      lerp255( dstPixel.b, color.b, alpha ),
+      lerp255( dstPixel.a, alpha, alpha )
+    };
+		setPixel( fb, x, y, dstColor );
+	}
+}
+
 /* Create  a horizontal line on frameBuffer */
 void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color )
 {
