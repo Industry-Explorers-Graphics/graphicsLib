@@ -13,7 +13,7 @@ void write_ppm(char *filename, frameBuffer * fb)
             fclose(out);
 }
 
-/* Make the picture, store it, and o home */
+/* Make the picture, store it, and exit */
 int main ()
 {
     frameBuffer *fb =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
@@ -41,15 +41,16 @@ int main ()
 
     frameBuffer *fb7 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
     drawTriangleFill( fb7, 30, 50, 10, 20, 50, 40, PINK );
-    write_ppm( "triangleFrame.ppm", fb7 );
+    write_ppm( "triangleFill.ppm", fb7 );
 
     bitBlt(dst, 20, 30, fb7, 10, 20, 60, 60 );
     write_ppm ( "bitBltTest.ppm", dst );
 
     frameBuffer *fb8 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
     char *str = "hello world!";
-    drawText(fb8, 2, 10, str, GREEN);
+    drawText(fb8, 2, 10, str, PINK);
     write_ppm ( "text.ppm", fb8 );
 
+    // create a test for the coverPixel function
     return 0;
 }
