@@ -1,4 +1,5 @@
 --test_draw1.lua
+local ffi = require("ffi")
 local draw = require("render_ffi")
 local colors = require("colors")
 local ppm = require("ppm")
@@ -18,15 +19,15 @@ local fb = draw.createFrameBuffer ( width, height, x, y, data, ownsData, pixelSt
 assert(fb ~= nil)
 
 -- draw some lines in it
-local color = ffi.new("rgb", 255, 0, 0);
+local color = ffi.new("pixel", 255, 0, 0);
 
 draw.drawHorizontalLine( fb, width-1, 0, 10, color );
 draw.drawHorizontalLine( fb, width-1, 0, height-10, color );
 
-draw.drawVerticalLine( fb, height-1, 10,  10, color );
-draw.drawVerticalLine( fb, int length, width-1,  height-1, color );
+--draw.drawVerticalLine( fb, height-1, 10,  10, color );
+--draw.drawVerticalLine( fb, int length, width-1,  height-1, color );
 
-local color = ffi.new("rgb", 0,255,0);
+local color = ffi.new("pixel", 0,255,0);
 draw.drawDiagonalLine( fb, 0, 0, width-1, height-1, color );
 draw.drawDiagonalLine( fb, width-1, 0, 0, height-1, color );
 
