@@ -1,11 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <math.h>
-
-#ifndef render_h
-#define render_h
-
 #define swap16( a, b ) { int16_t t = a; a = b; b = t; }
 
 // turn a division by 255 into something
@@ -64,5 +56,3 @@ void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pi
 void bitBlt(frameBuffer *dst, int dstx, int dsty, frameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight );
 
 void drawText(frameBuffer *fb, int px, int py, char text[], pixel color);
-
-#endif

@@ -56,7 +56,7 @@ void coverPixel( frameBuffer *fb, int x, int y, pixel color )
 
 	// Quick reject if the foreground pixel has both 0 opacity
 	// and 0 for color component values
-	if ( 0 == color ) {
+  if ( 0 == color.r && 0 == color.g && 0 == color.b && 0 == color.a ) {
 		return;
 	}
 
@@ -71,9 +71,9 @@ void coverPixel( frameBuffer *fb, int x, int y, pixel color )
 	} else {
 		// All other cases where doing a cover of something
 		// other than full opacity
-		int32_t dstPixel = getPixel( fb, x, y );
+		pixel dstPixel = getPixel( fb, x, y );
 
-		int dstColor = {
+		pixel dstColor = {
       lerp255( dstPixel.r, color.r, alpha ),
       lerp255( dstPixel.g, color.g, alpha ),
       lerp255( dstPixel.b, color.b, alpha ),
@@ -533,7 +533,7 @@ void drawText(frameBuffer *fb, int px, int py, char* text, pixel color) {
                     x+=1;
                     if ((sym & (1 << ii)))
                     {
-                       setPixel(fb, x, y, color);
+                       coverPixel(fb, x, y, color);
                     }
                 }
             }
