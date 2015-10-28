@@ -1,11 +1,11 @@
 CC= gcc
 FLAGS= -std=c99 -lm
-CFLAGS= -std=c99 -Wall
+CFLAGS= -std=c99 -Wall -fPIC
 LDFLAGS= -v -shared
 
 TARGET 	= draw.so
 SOURCES	= render.c draw.c
-HEADERS	= render.h font.h
+HEADERS	= render.h
 OBJECTS	= $(SOURCES:.c=.o)
 
 all: $(TARGET)
