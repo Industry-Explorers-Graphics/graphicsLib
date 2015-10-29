@@ -51,7 +51,7 @@ void drawText(frameBuffer *fb, int px, int py, char text[], pixel color);
 ]]
 
 if ffi.os == "Linux" then
-    Lib_drawLib = ffi.load("draw")
+    Lib_drawLib = ffi.load("akdrawer")
 end
 
 return Lib_drawLib;
