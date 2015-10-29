@@ -1,9 +1,9 @@
 CC= gcc
 FLAGS= -std=c99 -lm
 CFLAGS= -std=c99 -Wall -fPIC
-LDFLAGS= -v -shared
+LDFLAGS= -v -shared -L /usr/local/lib
 
-TARGET 	= draw.so
+TARGET 	= libkandrawer.so
 SOURCES	= render.c draw.c
 HEADERS	= render.h
 OBJECTS	= $(SOURCES:.c=.o)
