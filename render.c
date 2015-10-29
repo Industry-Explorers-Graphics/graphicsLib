@@ -5,29 +5,41 @@
 #include "render.h"
 #include "font.h"
 
+// Swap triangle vertices
+#define swapVerts( a, b ) { int16_t t = a; a = b; b = t; }
+
 /* Image functions */
-frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int ownsData, int pixelStride )
+frameBuffer *createFrameBuffer( int width, int height, int x, int y, pixel *data, int pixelStride )
 {
     frameBuffer *fb = ( frameBuffer * )malloc( sizeof( frameBuffer ) );
     fb->width = width;
     fb->height = height;
-    fb->data = ( pixel * ) malloc( sizeof( pixel )* width * height );
     fb->x = x;
     fb->y = y;
 
-    if ( data != NULL )
+    if ( data == NULL )
     {
-        fb->data = data;
-        fb->ownsData = 0; // why 0?
-        fb->pixelStride = pixelStride;
+       fb->data = ( pixel * )malloc( sizeof( pixel )* width * height );
+       // was malloc called on it's own data?
+       fb->ownsData = 1; 
+       fb->pixelStride = width;
     }
     else
     {
-        fb->data = ( pixel *) malloc( sizeof( pixel )* width * height );
-        fb->ownsData = 1;
-        fb->pixelStride = width;
+        fb->data = data;
+        fb->ownsData = 0;
+        fb->pixelStride = pixelStride;
     }
     return fb;
+}
+
+int freeFrameBuffer( frameBuffer *fb )
+{
+   if ( fb->ownsData )
+   {
+       free( fb->data );
+   }
+   return 0;
 }
 
 /* With given x and y coordinates, give the pixels a color  */
@@ -40,8 +52,8 @@ void setPixel( frameBuffer *fb, int x, int y, pixel color )
 /* Does this work? */
 /* Will need to be changed once we get rid of the pixel struct anyway */
 pixel getPixel( frameBuffer *fb, int x, int y ) {
-    int offset = y * fb-> width + x;
-    pixel color = fb -> data[offset];
+    int offset = y * fb->width + x;
+    pixel color = fb->data[offset];
     return color;
 }
 // made this for testing purposes
@@ -52,33 +64,24 @@ void points( frameBuffer * fb, int x, int y, pixel color ) {
 /* Create a pixel cover function for blending */
 void coverPixel( frameBuffer *fb, int x, int y, pixel color )
 {
-  uint8_t alpha = color.a;
+    uint8_t alpha = GET_A( color );
 
-	// Quick reject if the foreground pixel has both 0 opacity
-	// and 0 for color component values
-  if ( 0 == color.r && 0 == color.g && 0 == color.b && 0 == color.a ) {
-		return;
-	}
+	if ( 255 == alpha ) 
+    {
+		// Full opacity so copy the color and set the pixel
+        setPixel( fb, x, y, color );
+	} 
+    else 
+    {
+	    // Blend color values
+        pixel dstPixel = getPixel( fb, x, y );
 
-	if ( 0 == alpha ) {
-		// Combine the colors, but don't
-		// change the alpha of the background
-	} else if ( 255 == alpha ) {
-		// The foreground opacity is full, so set
-		// the color
-		// and set the background alpha to full as well
-		setPixel( fb, x, y, color );
-	} else {
-		// All other cases where doing a cover of something
-		// other than full opacity
-		pixel dstPixel = getPixel( fb, x, y );
-
-		pixel dstColor = {
-      lerp255( dstPixel.r, color.r, alpha ),
-      lerp255( dstPixel.g, color.g, alpha ),
-      lerp255( dstPixel.b, color.b, alpha ),
-      lerp255( dstPixel.a, alpha, alpha )
-    };
+	    pixel dstColor = (
+            lerp255( GET_R( dstPixel ), GET_R( color ), alpha ),
+            lerp255( GET_G( dstPixel ), GET_G( color ), alpha ),
+            lerp255( GET_B( dstPixel ), GET_B( color ), alpha ),
+            lerp255( GET_A( dstPixel ), alpha, alpha )
+            );
 		setPixel( fb, x, y, dstColor );
 	}
 }
@@ -88,7 +91,7 @@ void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color 
 {
     for( int i = x; i < ( x + length ); i++ )
     {
-        setPixel( fb, i, y, color );
+        coverPixel( fb, i, y, color );
     }
 }
 
@@ -362,7 +365,7 @@ void drawTriangleFill( frameBuffer *fb,
 		b = x0 + ( x2 - x0 ) * ( y - y0 ) / ( y2 - y0 );
 		*/
 
-		if ( a > b ) swap16( a, b );
+		if ( a > b ) swapVerts( a, b );
 			drawHorizontalLine( fb, b - a + 1, a, y, color );
 	}
 
@@ -381,7 +384,7 @@ void drawTriangleFill( frameBuffer *fb,
 		b = x0 + ( x2 - x0 ) * ( y - y0 ) / ( y2 - y0 );
 		*/
 		if ( a > b )
-			swap16( a, b );
+			swapVerts( a, b );
 
 		drawHorizontalLine( fb, b - a + 1, a, y, color );
 	}
@@ -533,7 +536,7 @@ void drawText(frameBuffer *fb, int px, int py, char* text, pixel color) {
                     x+=1;
                     if ((sym & (1 << ii)))
                     {
-                       coverPixel(fb, x, y, color);
+                       setPixel(fb, x, y, color);
                     }
                 }
             }
