@@ -56,3 +56,10 @@ void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pi
 void bitBlt(frameBuffer *dst, int dstx, int dsty, frameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight );
 
 void drawText(frameBuffer *fb, int px, int py, char text[], pixel color);
+]]
+
+if ffi.os == "Linux" then
+    Lib_drawLib = ffi.load("kandrawer")
+end
+
+return Lib_drawLib;
