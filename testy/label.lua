@@ -7,7 +7,7 @@ local Label_mt = {
   __index = Label;
 }
  
-function Label.new(self, x, y, text)
+function Label.new(self, x, y, text,color)
   local obj = {
     x = x;
     y = y;
@@ -19,5 +19,10 @@ function Label.new(self, x, y, text)
 end
 
 function Label.draw(self, fb)
-  drawLib.drawText(self.x, self.y, self.text, self.color)
+   local text = self.text
+   local c_str = ffi.new("char[?]", #text)
+   ffi.copy(c_str, text)
+   drawLib.drawText(fb, self.x, self.y, c_str, self.color)
 end
+
+return Label
