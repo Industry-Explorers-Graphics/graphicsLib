@@ -1,14 +1,10 @@
 --render_ffi.lua
 
-local ffi = require("ffi")
+local ffi = require( "ffi" )
+local bit = require( "bit" )
 
 ffi.cdef[[
-/* Image parameters */
-/* Create the pixel bytes */
-typedef struct _pixel
-{
-    uint8_t r, g, b;
-} pixel;
+typedef uint32_t pixel;
 
 typedef struct _frameBuffer
 {
@@ -22,10 +18,8 @@ typedef struct _frameBuffer
 } frameBuffer;
 ]]
 
-
-
 ffi.cdef[[
-frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int ownsData, int pixelStride );
+frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int pixelStride );
 
 void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color );
 void drawVerticalLine( frameBuffer *fb, int length, int x,  int y, pixel color );
