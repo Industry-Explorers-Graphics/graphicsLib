@@ -4,6 +4,7 @@ local draw = require("render_ffi")
 local colors = require("colors")
 local ppm = require("ppm")
 local lbl = require("label")
+local boundingbox = require("boundingbox")
 
 -- Create framebuffer
 -- TODO: extract this to its own file
@@ -19,21 +20,9 @@ local pixelStride = 0;
 local fb = draw.createFrameBuffer ( width, height, x, y, data, ownsData, pixelStride );
 assert(fb ~= nil)
 
-function BoundingBox()
-  Box = {
-  Length = 100,
-  Width = 100, 
-  X = fb.x + 5,
-  Y = fb.y + 5,
-  Color = colors.GREEN,
-  Children = {
-    {["type"] = "text", ["attr"] = "Hello World!"}},
-    {["type"] = "text", ["attr"] = "...               Goodbye world." }
-  }
+bbox = boundingbox:new(50, 50, 2, 2, colors.PINK, {
+  lbl:new(5,5,"hello",colors.PINK)
+})
+bbox:draw(fb)
 
-  return Box
-end
-
-myLabel = lbl:new(5,5,"hello",colors.PINK)
-myLabel:draw(fb)
-ppm.write_PPM_binary("label.ppm", fb.data, fb.width, fb.height, 3*width)
+ppm.write_PPM_binary("hellolabel.ppm", fb.data, fb.width, fb.height, 3*width)
