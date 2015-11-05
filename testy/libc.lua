@@ -1,5 +1,4 @@
-
-cal ffi = require("ffi")
+local ffi = require("ffi")
 local bit = require("bit")
 local band, bor = bit.band, bit.bor
 local lshift, rshift = bit.lshift, bit.rshift
