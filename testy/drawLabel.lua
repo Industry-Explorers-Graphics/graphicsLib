@@ -24,5 +24,9 @@ bbox = boundingbox:new(50, 50, 2, 2, colors.PINK, {
 })
 bbox:draw(fb)
 
+--myLabel = lbl:new( 1, 1, "Bienvenida!", colors.PINK )
+--myLabel:draw( fb )
+
+
 --write it out to a ppm file
 ppm.write_PPM_binary( "testText.ppm", fb.data, fb.width, fb.height, 4*width )

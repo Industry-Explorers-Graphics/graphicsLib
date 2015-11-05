@@ -20,10 +20,7 @@ function Label.new(self, x, y, text, color)
 end
 
 function Label.draw(self, fb)
-   local text = self.text
-   local c_string = ffi.new("char[?]", #text)
-   ffi.copy(c_str, text)
-   drawLib.drawText(fb, self.x, self.y, c_string, self.color)
+   drawLib.drawText(fb, self.x, self.y, self.text, self.color)
 end
 
 return Label

@@ -40,7 +40,7 @@ void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pi
 
 void bitBlt(frameBuffer *dst, int dstx, int dsty, frameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight );
 
-void drawText(frameBuffer *fb, int px, int py, char text[], pixel color);
+void drawText(frameBuffer *fb, int px, int py, const char* text, pixel color);
 
 ]]
 
