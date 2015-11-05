@@ -6,14 +6,21 @@
 #ifndef render_h
 #define render_h
 
-#define swap16( a, b ) { int16_t t = a; a = b; b = t; }
+// Turn a division by 255 into something
+// much cheaper to calculate
+// for values between 0 and 65534
+#define div255( num ) ( ( num + ( num >> 8 ) ) >> 8 )
+#define lerp255( background, foreground, a ) ( ( uint8_t )div255( ( foreground * a + background * ( 255 - a ) ) ) )
+
+// Define what a pixel is
+#define RGBA( r, g, b, a ) ( ( pixel )( a << 24 | b << 16 | g << 8 | r ) )
+#define GET_R( value ) ( ( pixel )value &0xff )
+#define GET_G( value ) ( ( ( pixel )value &0xff00 ) >> 8 )
+#define GET_B( value ) ( ( ( pixel )value &0xff0000 ) >> 16 )
+#define GET_A( value ) ( ( ( pixel )value &0xff000000 ) >> 24 )
 
 /* Image parameters */
-/* Create the pixel bytes */
-typedef struct _pixel
-{
-    uint8_t r, g, b;
-} pixel;
+typedef uint32_t pixel;
 
 typedef struct _frameBuffer
 {
@@ -26,17 +33,7 @@ typedef struct _frameBuffer
     int pixelStride;
 } frameBuffer;
 
-static const pixel PINK = { 240, 54, 87};
-static const pixel RED = { 250, 0, 0};
-static const pixel ORANGE = { 255, 122, 0};
-static const pixel YELLOW = { 255, 211, 0};
-static const pixel GREEN = { 0, 250, 0};
-static const pixel BLUE = { 0, 0, 250};
-static const pixel PURPLE = { 119, 3, 173};
-static const pixel WHITE = { 255, 255, 255};
-static const pixel BLACK = { 0, 0, 0};
-
-frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int ownsData, int pixelStride );
+frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int pixelStride );
 
 void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color );
 void drawVerticalLine( frameBuffer *fb, int length, int x,  int y, pixel color );
