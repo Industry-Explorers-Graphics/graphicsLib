@@ -7,7 +7,7 @@ local Label_mt = {
   __index = Label;
 }
  
-function Label.new(self, x, y, text,color)
+function Label.new(self, x, y, text, color)
   local obj = {
     x = x;
     y = y;
@@ -15,14 +15,15 @@ function Label.new(self, x, y, text,color)
     color = color;
   }
   setmetatable(obj, Label_mt)
+  
   return obj
 end
 
 function Label.draw(self, fb)
    local text = self.text
-   local c_str = ffi.new("char[?]", #text)
+   local c_string = ffi.new("char[?]", #text)
    ffi.copy(c_str, text)
-   drawLib.drawText(fb, self.x, self.y, c_str, self.color)
+   drawLib.drawText(fb, self.x, self.y, c_string, self.color)
 end
 
 return Label

@@ -13,6 +13,8 @@
 #define lerp255( background, foreground, a ) ( ( uint8_t )div255( ( foreground * a + background * ( 255 - a ) ) ) )
 
 // Define what a pixel is
+typedef uint32_t pixel;
+
 #define RGBA( r, g, b, a ) ( ( pixel )( a << 24 | b << 16 | g << 8 | r ) )
 #define GET_R( value ) ( ( pixel )value &0xff )
 #define GET_G( value ) ( ( ( pixel )value &0xff00 ) >> 8 )
@@ -20,8 +22,6 @@
 #define GET_A( value ) ( ( ( pixel )value &0xff000000 ) >> 24 )
 
 /* Image parameters */
-typedef uint32_t pixel;
-
 typedef struct _frameBuffer
 {
     int width;
