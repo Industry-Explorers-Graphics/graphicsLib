@@ -32,6 +32,7 @@ void drawTriangleFrame( frameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int
 void drawTriangleFill( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
 
 void drawCircleFrame( frameBuffer *fb, int x0, int y0, int radius, pixel color );
+void drawCircleFill( frameBuffer *fb, int x0, int y0, int radius, pixel color );
 void drawEllipseFrame( frameBuffer * fb, int xc, int yc, int width, int height, pixel color );
 
 void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
