@@ -1,5 +1,4 @@
 --label.lua
-local ffi = require("ffi")
 local drawLib = require("render_ffi")
 
 local Label = {}
