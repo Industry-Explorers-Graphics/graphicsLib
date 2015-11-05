@@ -1,14 +1,10 @@
 --render_ffi.lua
 
-local ffi = require("ffi")
+local ffi = require( "ffi" )
+local bit = require( "bit" )
 
 ffi.cdef[[
-/* Image parameters */
-/* Create the pixel bytes */
-typedef struct _pixel
-{
-    uint8_t r, g, b;
-} pixel;
+typedef uint32_t pixel;
 
 typedef struct _frameBuffer
 {
@@ -22,10 +18,8 @@ typedef struct _frameBuffer
 } frameBuffer;
 ]]
 
-
-
 ffi.cdef[[
-frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int ownsData, int pixelStride );
+frameBuffer *createFrameBuffer ( int width, int height, int x, int y, pixel *data, int pixelStride );
 
 void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color );
 void drawVerticalLine( frameBuffer *fb, int length, int x,  int y, pixel color );
@@ -38,6 +32,7 @@ void drawTriangleFrame( frameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int
 void drawTriangleFill( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
 
 void drawCircleFrame( frameBuffer *fb, int x0, int y0, int radius, pixel color );
+void drawCircleFill( frameBuffer *fb, int x0, int y0, int radius, pixel color );
 void drawEllipseFrame( frameBuffer * fb, int xc, int yc, int width, int height, pixel color );
 
 void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
@@ -46,7 +41,7 @@ void bezier( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pi
 
 void bitBlt(frameBuffer *dst, int dstx, int dsty, frameBuffer *src, int srcx, int srcy, int srcWidth, int srcHeight );
 
-void drawText(frameBuffer *fb, int px, int py, char text[], pixel color);
+void drawText(frameBuffer *fb, int px, int py, const char* text, pixel color);
 
 ]]
 
