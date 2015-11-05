@@ -369,6 +369,7 @@ void drawCircleFrame( frameBuffer *fb, int x0, int y0, int radius, pixel color )
     setPixel( fb, -y + x0, -x + y0, color ); // Octant 6
     setPixel( fb,  x + x0, -y + y0, color ); // Octant 8
     setPixel( fb,  y + x0, -x + y0, color ); // Octant 7
+    
     y++;
     if ( decisionOver2<=0 )
     {
@@ -381,6 +382,33 @@ void drawCircleFrame( frameBuffer *fb, int x0, int y0, int radius, pixel color )
     }
   }
 }
+
+void drawCircleFill( frameBuffer *fb, int x0, int y0, int radius, pixel color )
+{
+  int x = radius;
+  int y = 0;
+  int decisionOver2 = 1 - x;
+
+  while( y <= x )
+  {
+    drawHorizontalLine( fb,(y + x0) - (-y + x0) , -y + x0, -x + y0, color );
+    drawHorizontalLine( fb,(x + x0) - (-x + x0), -x + x0, -y + y0, color );
+    drawHorizontalLine( fb,(x + x0)- (-x + x0), -x + x0,  y + y0, color );
+    drawHorizontalLine( fb, (y + x0) - (-y + x0), -y + x0,  x + y0, color);
+    
+    y++;
+    if ( decisionOver2<=0 )
+    {
+      decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
+    }
+    else
+    {
+      x--;
+      decisionOver2 += 2 * ( y - x ) + 1;   // Change for y -> y+1, x -> x-1
+    }
+  }
+}
+
 
 void drawEllipseFrame( frameBuffer * fb, int xc, int yc, int width, int height, pixel color )
 {
