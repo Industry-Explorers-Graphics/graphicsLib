@@ -6,6 +6,7 @@ local colors = require( "colors" )
 local ppm = require( "ppm" )
 local boundingbox = require("boundingbox")
 local radiobutton = require("radiobutton")
+local slider = require("slider")
 
 --create the framebuffer
 local width = 340;
@@ -19,10 +20,8 @@ local fb = drawLib.createFrameBuffer( width, height, x, y, data, pixelStride )
 assert( fb ~= nil )
 
 bbox = boundingbox:new(50, 50, 2, 2, colors.PINK, {
-    lbl:new(5, 5, "B", colors.PINK),
-    radiobutton:new(10, 5, colors.GREEN, 1),
-    radiobutton:new(20, 5, colors.GREEN, 0)
+    slider:new(50, 50, 10, 10, colors.GREEN, 0)
 })
 bbox:draw(fb)
 
-ppm.write_PPM_binary( "button.ppm", fb.data, fb.width, fb.height, 4*width )
+ppm.write_PPM_binary( "slider.ppm", fb.data, fb.width, fb.height, 4*width )
