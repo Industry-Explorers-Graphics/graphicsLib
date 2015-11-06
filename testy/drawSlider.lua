@@ -1,4 +1,4 @@
---drawRadioButton.lua
+--drawSlider.lua
 local ffi = require( "ffi" )
 local drawLib = require( "render_ffi" )
 local lbl = require( "label" )

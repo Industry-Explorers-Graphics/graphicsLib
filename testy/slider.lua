@@ -1,34 +1,77 @@
---radiobutton.lua
+--slider.lua
 local drawLib = require("render_ffi")
 local colors = require("colors")
 
-local RadioButton = {}
-local RadioButton_mt = {
-  __index = RadioButton;
+local Handle = {}
+local Handle_mt = {
+  __index = Handle;
 }
 
-function RadioButton.new(self, x, y, color, state)
+local Bar = {}
+local Bar_mt = {
+  __index = Bar;
+}
+
+local Slider = {}
+local Slider_mt = {
+  __index = Slider;
+}
+
+function Bar.new(self, x, y, width, height, color)
   local obj = {
     x = x;
     y = y;
-    radius = 5;
+    width = width;
+    height = height;
+    color = color;
+  }
+  setmetatable(obj, Bar_mt)
+  return obj
+end
+
+function Bar.draw(self, fb)
+  drawLib.drawRectFrame(fb, self.x, self.y, self.width, self.height, self.color);
+end
+
+function Handle.new(self, x, y, radius, color)
+  local obj = {
+    x = x;
+    y = y;
+    radius = radius;
+    color = color;
+  }
+  setmetatable(obj, Handle_mt)
+  return obj
+end
+
+
+function Handle.draw(self, fb)
+  drawLib.drawCircleFill(fb , self.x, self.y, self.radius, self.color);
+end
+
+function Slider.new(self, x, y, width, height, color, state)
+  local obj = {
+    x = x;
+    y = y;
+    width = width;
+    height = height;
     color = color;
     state = state;
   }
-  setmetatable(obj, RadioButton_mt)
+  setmetatable(obj, Slider_mt)
   return obj
 end 
 
-function RadioButton.draw(self, fb)
+function Slider.draw(self, fb)
   if self.state == 0 then
-    drawLib.drawCircleFill(fb, self.x, self.y, self.radius, self.color)
-    drawLib.drawCircleFill(fb, self.x, self.y, self.radius - 2, colors.BLACK)
+    local bar = Bar:new(self.x, 0.2 * self.height, self.width, self.height * 0.8, colors.BLUE)
+    local handle = Handle:new(self.x, 0.5 * self.height, 0.5 * self.height, colors.YELLOW)
+    bar:draw(fb)
+    handle:draw(fb)
   end
-  if self.state == 1 then
-    drawLib.drawCircleFill(fb, self.x, self.y, self.radius, self.color)
-    drawLib.drawCircleFill(fb, self.x, self.y, self.radius - 2, colors.BLACK)
-    drawLib.drawCircleFill(fb, self.x, self.y, self.radius - 3, self.color);
+  if state == 1 then
+    print("error: no io library in place")
   end
 end
 
-return RadioButton
+return Slider
