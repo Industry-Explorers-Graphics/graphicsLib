@@ -197,11 +197,11 @@ void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel 
 
 /* Create a filled rectangle  */
 
-void drawRectFill( frameBuffer * fb, int x, int y, int width, int height, pixel color )
+void drawRectFill( frameBuffer *fb, int x, int y, int width, int length, pixel color )
 {
-    for ( int i = 0; i <= (x + height ); i++ )
+    for ( int i = x; i <= ( x + length ); i++ )
     {
-        drawHorizontalLine( fb, width, x, y + i, color );
+        drawHorizontalLine( fb, width, x, i, color );
     }
 }
 

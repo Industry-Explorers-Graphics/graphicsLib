@@ -39,7 +39,7 @@ int main ()
     frameBuffer *fb2 =  createFrameBuffer( 320, 256, 0, 0, 0, 320 );
     //drawRectFrame( fb2, 1, 1,  100, 200, PINK );
     drawRectFill( fb2, 1, 1, 100, 200, PINK );
-    write_ppm( "rect.ppm", fb2 );
+    write_ppm( "newR.ppm", fb2 );
 
     //frameBuffer *fb3 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
     //drawCircleFrame( fb3, 100, 100, 10, PINK );
