@@ -49,4 +49,8 @@ if ffi.os == "Linux" then
     Lib_drawLib = ffi.load("kandrawer")
 end
 
+if ffi.os == "OSX" then
+    Lib_drawLib = ffi.load("kandrawer")
+end
+
 return Lib_drawLib;
