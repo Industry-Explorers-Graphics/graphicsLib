@@ -195,13 +195,13 @@ void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel 
     }
 }
 
-/* Create a rectangle with rounded corners  */
+/* Create a filled rectangle  */
 
-void drawRectFill( frameBuffer * fb, int x, int y, int width, int height, pixel color )
+void drawRectFill( frameBuffer *fb, int x, int y, int width, int length, pixel color )
 {
-    for ( int i = x; i <= ( x + width ); i++ )
+    for ( int i = x; i <= ( x + length ); i++ )
     {
-        drawVerticalLine( fb, i, y, height, color );
+        drawHorizontalLine( fb, width, x, i, color );
     }
 }
 
