@@ -20,7 +20,8 @@ local fb = drawLib.createFrameBuffer( width, height, x, y, data, pixelStride )
 assert( fb ~= nil )
 
 bbox = boundingbox:new(50, 50, 2, 2, colors.PINK, {
-    slider:new(50, 50, 10, 10, colors.GREEN, 0)
+    slider:new(50, 50, 100, 10, colors.GREEN, 0)
+
 })
 bbox:draw(fb)
 

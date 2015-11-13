@@ -64,7 +64,7 @@ end
 
 function Slider.draw(self, fb)
   if self.state == 0 then
-    local bar = Bar:new(self.x, 0.2 * self.height, self.width, 0.5 * self.height, colors.BLUE)
+    local bar = Bar:new(self.x, 0.5 * self.height, self.width, 0.5 * self.height, colors.BLUE)
     local handle = Handle:new(self.x, 0.5 * self.height, 0.5 * self.height, colors.YELLOW)
     bar:draw(fb)
     handle:draw(fb)
