@@ -26,7 +26,7 @@ void drawVerticalLine( frameBuffer *fb, int length, int x,  int y, pixel color )
 void drawDiagonalLine( frameBuffer *fb, int x1, int y1, int x2, int y2, pixel color );
 
 void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel color );
-void drawRectFill( frameBuffer * fb, int x, int y, int width, int height, pixel color );
+void drawRectFill( frameBuffer * fb, int x, int y, int width, int length, pixel color );
 
 void drawTriangleFrame( frameBuffer *fb, int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2, int cx1,  int cy1, int cx2, int cy2, pixel color );
 void drawTriangleFill( frameBuffer *fb, int x1, int y1, int x2, int y2, int x3, int y3, pixel color );
