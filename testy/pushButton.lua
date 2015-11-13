@@ -1,4 +1,16 @@
 --pushButton.lua
+
+--[[
+  Specs:
+    1.Button should have width of x and length of y,
+      where x is:
+      and y is:
+    2.Bounding box should be at least 4px smaller in
+      length and width of the button's borders and 'centered'
+    3.Label is a child of bounding box and should be
+      constrained w/in bounding box and 'centered'
+]]
+
 local ffi = require( "ffi" )
 local drawLib = require( "render_ffi" )
 local lbl = require( "label" )
@@ -8,9 +20,9 @@ local ButtonBckgrnd_mt = {
     __index = ButtonBackground;
 }
 
-local ButtonLabel = {}
-local ButtonLabel_mt = {
-    __index = ButtonLabel;
+local LabelBox = {}
+local LabelBox_mt = {
+    __index = LabelBox;
 }
 
 local PushButton = {}
@@ -22,28 +34,28 @@ function ButtonBackground.new( self, x, y, color, state )
     local obj = {
         x = x;
         y = y;
-        width = 5; 
+        width = 10;
         length = 20;
         color = color;
         state = state;
     }
     setmetatable( obj, ButtonBackground_mt )
-    
+
     return obj
 end
 
 --create a bounding box to hold any type of button label
-function ButtonLabel.new( self, x, y, width, length, color, children )
+function LabelBox.new( self, x, y, width, length, color, children )
     local obj = {
         x = x;
         y = y;
-        width = width;
-        length = length;
+        width = 6;
+        length = 16;
         color = color;
-        children = children
+        children = children;
     }
-    setmetatable( obj, ButtonLabel_mt )
-    
+    setmetatable( obj, LabelBox_mt )
+
     return obj
 end
 
@@ -61,23 +73,24 @@ function PushButton.new( self, x, y, width, length, color )
 end
 
 function ButtonBackground.draw( self, fb )
-    drawLib.drawRectFill(fb, self.x, self.y, self.width, self.length, self.color)
+    drawLib.drawRectFill( fb, self.x, self.y, self.width, self.length, self.color )
 end
 
-function ButtonLabel.draw( self, fb )
-    drawLib.drawRectFrame(fb, self.length, self.width, self.x, self.y, self.color)
+function LabelBox.draw( self, fb )
+    drawLib.drawRectFrame( fb, self.length, self.width, self.x, self.y, self.color )
 end
 
 function PushButton.draw(self, fb)
     if self.state == 0 then
         local bckgrd = ButtonBackground:new( 300, 200, colors.GREEN, 0 )
-        local label = ButtonLabel:new( colors.GREEN, { lbl:new( 0, 0, "OK", colors.WHITE )} )
+        --for now, automatically give the button a text label child
+        local label = LabelBox:new( bckgrd.x - 2, bckgrd.y - 2, width, length, colors.GREEN, { lbl:new( 0, 0, "OK", colors.WHITE )} )
 
         bckgrd.draw(fb)
-        bckgrd.draw(fb)
-    else 
+        label.draw(fb)
+    else
         print( "there are currently no IO events" )
     end
 end
 
-return PushButton 
+return PushButton
