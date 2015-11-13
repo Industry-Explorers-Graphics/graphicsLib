@@ -15,8 +15,8 @@ local ffi = require( "ffi" )
 local drawLib = require( "render_ffi" )
 local lbl = require( "label" )
 
-local ButtonBckgrnd = {}
-local ButtonBckgrnd_mt = {
+local ButtonBackground = {}
+local ButtonBackground_mt = {
     __index = ButtonBackground;
 }
 
@@ -30,7 +30,7 @@ local PushButton_mt = {
     __index = PushButton;
 }
 
-function ButtonBackground.new( self, x, y, color, state )
+function ButtonBackground.new( self, x, y, color )
     local obj = {
         x = x;
         y = y;
