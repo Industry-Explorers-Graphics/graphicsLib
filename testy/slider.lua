@@ -74,4 +74,13 @@ function Slider.draw(self, fb)
   end
 end
 
+function Slider.contains(self, x, y)
+  if x >= self.x and x <= self.x + self.width and y >= (0.5 + self.height) and y <= self.y + self.height then
+    return true
+  else
+    return false
+  end
+
+end
+
 return Slider
