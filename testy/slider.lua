@@ -49,38 +49,37 @@ function Handle.draw(self, fb)
   drawLib.drawCircleFill(fb , self.x, self.y, self.radius, self.color);
 end
 
-function Slider.new(self, x, y, width, height, color, state)
+function Slider.new(self, x, y, width, height, color, isDragging)
   local obj = {
     x = x;
     y = y;
     width = width;
     height = height;
     color = color;
-    state = state;
+    isDragging = isDragging;
   }
   setmetatable(obj, Slider_mt)
   return obj
 end 
 
 function Slider.draw(self, fb)
-  if self.state == 0 then
-    local bar = Bar:new(self.x, 0.5 * self.height, self.width, 0.5 * self.height, colors.BLUE)
-    local handle = Handle:new(self.x, 0.5 * self.height, 0.5 * self.height, colors.YELLOW)
-    bar:draw(fb)
-    handle:draw(fb)
-  end
-  if state == 1 then
-    print("error: no io library in place")
-  end
+  local bar = Bar:new(self.x, 0.5 * self.height, self.width, 0.5 * self.height, colors.BLUE)
+	local handle = Handle:new(self.x + (0.5 * self.height), self.y + (0.25 * self.height), 0.5 * self.height, colors.YELLOW)
+  bar:draw(fb)
+  handle:draw(fb)
 end
 
+function Slider.onMouseActivity(self, fb, event)
+  return 0
+end
+
+-- check if point is within the bar
 function Slider.contains(self, x, y)
   if x >= self.x and x <= self.x + self.width and y >= (0.5 + self.height) and y <= self.y + self.height then
     return true
   else
     return false
   end
-
 end
 
 return Slider
