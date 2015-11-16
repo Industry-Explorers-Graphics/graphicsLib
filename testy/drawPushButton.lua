@@ -15,15 +15,11 @@ local data = nil;
 local pixelStride = 0;
 
 local fb = drawLib.createFrameBuffer( width, height, x, y, data, pixelStride )
-assert( fb ~= nil )
+assert(fb ~= nil)
 
-bbox = boundingbox:new( 200, 200, 2, 2, colors.PINK, {
-    lbl:new( 5, 5, "Bienvendia!", colors.WHITE ),
-    pushButton:new(10, 5, colors.GREEN, 0)
+bbox = boundingbox:new(200, 200, 2, 2, colors.PINK, {
+    pushButton:new(10, 5, colors.GREEN)
 })
 bbox:draw(fb)
 
---pushButton:draw(fb)
-
---write it out to a ppm file
-ppm.write_PPM_binary( "button.ppm", fb.data, fb.width, fb.height, 4*width )
+ppm.write_PPM_binary("button.ppm", fb.data, fb.width, fb.height, 4*width)
