@@ -29,4 +29,14 @@ function BoundingBox.draw(self, fb)
   end
 end
 
+function BoundingBox.contains(self, x, y)
+  --our drawRect function is very simple so this will work
+  --if drawRect changes we'll need more sophisticated point in polygon checks
+  if x >= self.x and x <= self.x + self.width and y >= self.y and y <= self.y + self.length then
+    return true
+  else
+    return false
+  end
+end
+
 return BoundingBox  
