@@ -36,10 +36,10 @@ int main ()
     //frameBuffer *fb =  createFrameBuffer( 320, 256, 0, 0, 0 );
     
 
-    frameBuffer *fb2 =  createFrameBuffer( 320, 256, 0, 0, 0, 320 );
+    //frameBuffer *fb2 =  createFrameBuffer( 320, 256, 0, 0, 0, 320 );
     //drawRectFrame( fb2, 1, 1,  100, 200, PINK );
-    drawRectFill( fb2, 1, 1, 100, 200, PINK );
-    write_ppm( "newR.ppm", fb2 );
+    //drawRectFill( fb2, 1, 1, 100, 200, PINK );
+    //write_ppm( "newR.ppm", fb2 );
 
     //frameBuffer *fb3 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
     //drawCircleFrame( fb3, 100, 100, 10, PINK );
@@ -69,10 +69,10 @@ int main ()
     //bitBlt(dst, 20, 30, fb7, 10, 20, 60, 60 );
     //write_ppm ( "bitBltTest.ppm", dst );
 
-    //frameBuffer *fb8 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
-    //char *str = "hello world!";
-    //drawText(fb8, 2, 10, str, PINK);
-    //write_ppm ( "text.ppm", fb8 );
+    frameBuffer *fb8 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
+    char *str = "hello world!";
+    drawText(fb8, 2, 10, str, PINK);
+    write_ppm ( "text.ppm", fb8 );
 
     // create a test for the coverPixel function
     return 0;

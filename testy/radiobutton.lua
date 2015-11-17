@@ -3,7 +3,6 @@ local drawLib = require("render_ffi")
 local colors = require("colors")
 local math = require("math")
 
-
 local RadioButton = {}
 local RadioButton_mt = {
   __index = RadioButton;
@@ -30,6 +29,14 @@ function RadioButton.draw(self, fb)
     drawLib.drawCircleFill(fb, self.x, self.y, self.radius, self.color)
     drawLib.drawCircleFill(fb, self.x, self.y, self.radius - 2, colors.BLACK)
     drawLib.drawCircleFill(fb, self.x, self.y, self.radius - 3, self.color);
+  end
+end
+
+function RadioButton.onMouseActivity(self,fb,event)
+  if event == 1 then
+    self.state = 1
+    --draw elsewhere?
+    --self.draw(fb);
   end
 end
 

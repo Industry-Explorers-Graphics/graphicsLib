@@ -25,4 +25,5 @@ bbox = boundingbox:new(50, 50, 2, 2, colors.PINK, {
 })
 bbox:draw(fb)
 
+
 ppm.write_PPM_binary( "button.ppm", fb.data, fb.width, fb.height, 4*width )

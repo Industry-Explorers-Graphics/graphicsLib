@@ -7,6 +7,9 @@ local ppm = require( "ppm" )
 local boundingbox = require("boundingbox")
 local radiobutton = require("radiobutton")
 local slider = require("slider")
+local bar = require("bar")
+local handle = require("handle")
+
 
 --create the framebuffer
 local width = 340;
@@ -19,9 +22,12 @@ local pixelStride = 0;
 local fb = drawLib.createFrameBuffer( width, height, x, y, data, pixelStride )
 assert( fb ~= nil )
 
-bbox = boundingbox:new(50, 50, 2, 2, colors.PINK, {
-    slider:new(50, 50, 100, 10, colors.GREEN, 0)
+local bar = bar:new(self.x, 0.5 * self.height, self.width, 0.5 * self.height, colors.BLUE)
+local handle = bandle:new(self.x + (0.5 * self.height), self.y + (0.25 * self.height), 0.5 * self.height, colors.YELLOW)
 
+
+bbox = boundingbox:new(50, 50, 2, 2, colors.PINK, {
+    slider:new(bar, handle, 0, 10, 0)
 })
 bbox:draw(fb)
 

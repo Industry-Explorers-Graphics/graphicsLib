@@ -545,10 +545,7 @@ void bitBlt(FrameBuffer *dst, FrameBuffer *src, int x, int y) {
 }
 */
 
-void drawText(frameBuffer *fb, int px, int py, const char* text, pixel color) {
-    // change to global font width and height defined in file
-    px = px* 8;
-    py = py* 15;
+void drawText(frameBuffer *fb, int x, int y, const char* text, pixel color) {
 
     for (int c = 0; text[c] != '\0'; c++ )
     {
@@ -556,18 +553,15 @@ void drawText(frameBuffer *fb, int px, int py, const char* text, pixel color) {
             {
                 int sym = iso_font[text[c]*16+i];
 
-                int x = px;
-                int y = py + i;
-
                 for (int ii =0; ii < 8; ii++)
                 {
-                    x+=1;
                     if ((sym & (1 << ii)))
                     {
-                       setPixel(fb, x, y, color);
+                       setPixel(fb, x + ii, y + i, color);
+                    
                     }
+                    x+=8;
                 }
             }
-            px+=8;
     }
 }
