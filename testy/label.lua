@@ -12,6 +12,7 @@ function Label.new(self, x, y, text, color)
     y = y;
     text = text;
     color = color;
+    length = ( string.len(text) * 8 );
   }
   setmetatable(obj, Label_mt)
   

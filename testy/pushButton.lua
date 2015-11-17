@@ -14,12 +14,11 @@ function PushButton.new(self, x, y, length, color, children, state)
     local obj = {
         x = x;
         y = y;
-        width = children.length or 20;
         length = length;
         color = color;
-        state = state;
-        children = {} or children;
-        state = state or 0;
+        children =  children;
+        width = children[1].length or 20;
+        state = 0;
     }
     setmetatable(obj, PushButton_mt)
 
