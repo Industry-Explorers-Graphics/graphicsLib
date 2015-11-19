@@ -1,6 +1,6 @@
 --mouseActivity.lua
 
-local class = require "pl.class"
+local class = require("pl.class")
 
 --    public delegate void MouseActivityEventHandler(Object sender, MouseActivityArgs me);
 
@@ -9,7 +9,6 @@ local class = require "pl.class"
 RawMouseEventType =
 
 {
-
         AttributesChanged = User32.MOUSE_ATTRIBUTES_CHANGED,
 
         MoveRelative = User32.MOUSE_MOVE_RELATIVE,
@@ -17,7 +16,6 @@ RawMouseEventType =
         MoveAbsolute = User32.MOUSE_MOVE_ABSOLUTE,
 
         VirtualDesktop = User32.MOUSE_VIRTUAL_DESKTOP,
-
 }
 
 --]]
@@ -25,29 +23,24 @@ RawMouseEventType =
 MouseCoordinateSpace =
 
 {
-
         Window = 1,
 
         Desktop = 2,
 
         Screen = 3,
-
 }
 
 MouseMovementType =
 
 {
-
         Relative = 1,
 
         Absolute = 2,
-
 }
 
 MouseActivityType =
 
 {
-
         None = 0,       -- No activity
 
         MouseDown = 1,
@@ -98,7 +91,6 @@ iup.issys(status)
 MouseButton =
 
 {
-
         None           = 0,
 
         Left           = 1,
@@ -112,36 +104,34 @@ MouseButton =
         Button5        = 5,
 
         Wheel          = 6,
-
 }
 
 MouseButtonActivity =
 
 {
-
         None                = 0,
 
         LeftButtonDown      = 1,    -- Left Button changed to down.
 
         LeftButtonUp        = 2,    -- Left Button changed to up.
 
-        RightButtonDown     = 3,       -- Right Button changed to down.
+        RightButtonDown     = 3,    -- Right Button changed to down.
 
-        RightButtonUp       = 4,       -- Right Button changed to up.
+        RightButtonUp       = 4,    -- Right Button changed to up.
 
-        MiddleButtonDown    = 5,       -- Middle Button changed to down.
+        MiddleButtonDown    = 5,    -- Middle Button changed to down.
 
-        MiddleButtonUp      = 6,       -- Middle Button changed to up.
+        MiddleButtonUp      = 6,    -- Middle Button changed to up.
 
-        Button4Down         = 7,       -- Button 4
+        Button4Down         = 7,    -- Button 4
 
         Button4Up           = 8,
 
-        Button5Down         = 9,       -- Button 5
+        Button5Down         = 9,    -- Button 5
 
         Button5Up           = 10,
 
-        MouseWheel          = 11,      -- Wheel
+        MouseWheel          = 11,   -- Wheel
 
 }
 
