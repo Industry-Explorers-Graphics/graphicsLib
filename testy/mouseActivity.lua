@@ -1,3 +1,5 @@
+--mouseActivity.lua
+
 local class = require "pl.class"
 
 --    public delegate void MouseActivityEventHandler(Object sender, MouseActivityArgs me);
@@ -61,9 +63,6 @@ MouseActivityType =
         MouseHover = 6,
 
         MouseWheel = 7,
-
- 
-
 }
 
 --===================================================
