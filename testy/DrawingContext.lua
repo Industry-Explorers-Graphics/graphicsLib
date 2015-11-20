@@ -1,3 +1,5 @@
+local ffi = require("ffi")
+local render = require("render_ffi")
 
 local DrawingContext = {}
 setmetatable(DrawingContext, {
@@ -10,10 +12,12 @@ local DrawingContext_mt = {
 }
 
 
-function DrawingContext.init(self, width, height, data)
+function DrawingContext.init(self, fb, data)
 	local obj = {
-		width = width;
-		height = height;
+		width = fb.width;
+		height = fb.height;
+		data = fb.data;
+		fb = fb;
 		data = data;
 	}
 	setmetatable(obj, DrawingContext_mt)
@@ -29,21 +33,15 @@ end
 
 function DrawingContext.setPixel(self, x, y, value)
 	local offset = y*self.width+x;
-	self.data[offset] = value;
+	self.fb.data[offset] = value;
 end
 
 function DrawingContext.hline(self, x, y, length, value)
-	while length > 0 do
-		self:setPixel(x+length-1, y, value)
-		length = length-1;
-	end
+	render.drawHorizontalLine( self.fb, length, x, y, ffi.cast("pixel",value) );
 end
 
-function DrawingContext.rect(self, x, y, width, height, value)
-	while height > 0 do
-		self:hline(x, y+height-1, width, value)
-		height = height - 1;
-	end
+function DrawingContext.rect(self, x, y, awidth, aheight, value)
+	render.drawRectFill( self.fb, x, y, awidth, aheight, ffi.cast("pixel", value) );
 end
 
 return DrawingContext

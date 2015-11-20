@@ -7,7 +7,7 @@ local bit = require( "bit" )
 local lshift, rshift, band, bar, bor = bit.lshift, bit.rshift, bit.band, bit.bar, bit.bor
 
 local function RGBA( r, g, b, a )
-    return bor( lshift( a, 24 ), lshift( b, 16 ), lshift( g, 8 ), r )
+    return bor( lshift( a, 24 ), lshift( r, 16 ), lshift( g, 8 ), b )
 end
 
 local function div255( num )
