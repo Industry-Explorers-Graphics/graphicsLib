@@ -83,7 +83,7 @@ local function size(awidth, aheight, data)
 	XMapRaised(dis, win);
 
 	data = data or ffi.new("uint32_t[?]", width*height)
-	img = LXImage(width, height, 24, data, dis, vis, ZPixmap, 0, 32, 0)
+	img = LXImage(width, height, 32, data, dis, vis, ZPixmap, 0, 32, 0)
 
 	return data;
 end
