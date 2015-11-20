@@ -18,7 +18,7 @@ local fb = drawLib.createFrameBuffer( width, height, x, y, data, pixelStride )
 assert(fb ~= nil)
 
 bbox = boundingbox:new(200, 200, 2, 2, colors.PINK, {
-    pushButton:new(10, 5, 10, colors.GREEN, { lbl:new(10, 5, "Hi Anne and Kamilah!", colors.PURPLE) }, 0 )
+    pushButton:new(10, 5, 10, { lbl:new(10, 5, "Hi Anne and Kamilah!", colors.WHITE ) }, 0 )
 })
 bbox:draw(fb)
 

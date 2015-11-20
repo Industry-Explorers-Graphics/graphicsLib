@@ -11,13 +11,13 @@ local PushButton_mt = {
 
 
 -- need to implement children.length
-function PushButton.new( self, x, y, length, color, children, state )
+function PushButton.new( self, x, y, length, children, state )
     children = children or {}
     local obj = {
         x = x;
         y = y;
         length = length;
-        color = color;
+        --color = color;
         children =  children;
         width = children[1].length or 20;
         state = 0;

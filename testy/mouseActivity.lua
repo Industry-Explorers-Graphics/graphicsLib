@@ -1,5 +1,5 @@
 --mouseActivity.lua
-
+package.path = package.path..";/?.lua"
 local class = require("pl.class")
 
 --    public delegate void MouseActivityEventHandler(Object sender, MouseActivityArgs me);
@@ -174,3 +174,5 @@ function MouseActivityArgs.__tostring(self)
                tostring(self.ActivityType), tostring(self.X), tostring(self.Y), tostring(self.Delta), tostring(self.Clicks), tostring(self.Button));
 
 end
+
+return class.MouseActivityArgs() 
