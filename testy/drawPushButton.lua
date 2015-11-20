@@ -18,12 +18,8 @@ local fb = drawLib.createFrameBuffer( width, height, x, y, data, pixelStride )
 assert(fb ~= nil)
 
 bbox = boundingbox:new(200, 200, 2, 2, colors.PINK, {
-    pushButton:new(10, 5, 10, colors.GREEN)
+    pushButton:new(10, 5, 10, { lbl:new(10, 5, "Hi Anne and Kamilah!", colors.WHITE ) }, 0 )
 })
 bbox:draw(fb)
-
-local pb = pushButton:new(10, 5, 10, colors.GREEN) 
-print(pb:contains(11, 5))
-
 
 ppm.write_PPM_binary("button.ppm", fb.data, fb.width, fb.height, 4*width)

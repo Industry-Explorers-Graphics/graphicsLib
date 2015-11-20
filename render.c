@@ -199,7 +199,7 @@ void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel 
 
 void drawRectFill( frameBuffer *fb, int x, int y, int width, int length, pixel color )
 {
-    for ( int i = x; i <= ( x + length ); i++ )
+    for ( int i = y; i <= ( y + length ); i++ )
     {
         drawHorizontalLine( fb, width, x, i, color );
     }
