@@ -9,7 +9,7 @@ local band = bit.band
 require("x11.X")
 
 
-local Lib_X11 = ffi.load("X11")
+local Lib_X11 = ffi.load("X11", true)
 local exports = {
 	Lib_X11 = Lib_X11;
 }
@@ -21,6 +21,23 @@ setmetatable(exports, {
 		end
 
 		return self;
+	end,
+
+	__index = function(self, key)
+		-- First, see if it's one of the functions or constants
+		-- in the library
+		local success, value = pcall(function() return ffi.C[key] end)
+		if success then
+			rawset(self, key, value)
+			return value;
+		end
+
+		-- try to find the key as a type
+		success, value = pcall(function() return ffi.typeof(key) end)
+		if success then
+			rawset(self, key, value)
+			return value;
+		end
 	end,
 })
 
@@ -82,15 +99,15 @@ exports.QueuedAfterFlush = 2
 
 
 function exports.ConnectionNumber(dpy) 	return ffi.cast("_XPrivDisplay",dpy).fd end
-function exports.RootWindow(dpy, scr) 	return (ScreenOfDisplay(dpy,scr).root) end
+function exports.RootWindow(dpy, scr) 	return (exports.ScreenOfDisplay(dpy,scr).root) end
 
 
 function exports.DefaultScreen(dpy) 	return ffi.cast("_XPrivDisplay", dpy).default_screen end
-function exports.DefaultRootWindow(dpy) 	return ScreenOfDisplay(dpy,DefaultScreen(dpy)).root end
-function exports.DefaultVisual(dpy, scr) return ScreenOfDisplay(dpy,scr).root_visual end
-function exports.DefaultGC(dpy, scr) 	return ScreenOfDisplay(dpy,scr).default_gc end
-function exports.BlackPixel(dpy, scr) 	return ScreenOfDisplay(dpy,scr).black_pixel end
-function exports.WhitePixel(dpy, scr) 	return ScreenOfDisplay(dpy,scr).white_pixel end
+function exports.DefaultRootWindow(dpy) 	return exports.ScreenOfDisplay(dpy,exports.DefaultScreen(dpy)).root end
+function exports.DefaultVisual(dpy, scr) return exports.ScreenOfDisplay(dpy,scr).root_visual end
+function exports.DefaultGC(dpy, scr) 	return exports.ScreenOfDisplay(dpy,scr).default_gc end
+function exports.BlackPixel(dpy, scr) 	return exports.ScreenOfDisplay(dpy,scr).black_pixel end
+function exports.WhitePixel(dpy, scr) 	return exports.ScreenOfDisplay(dpy,scr).white_pixel end
 
 
 exports.AllPlanes = bnot(0);		-- ((unsigned long)~0L)
@@ -109,7 +126,13 @@ exports.AllPlanes = bnot(0);		-- ((unsigned long)~0L)
 #define ProtocolRevision(dpy) 	(((_XPrivDisplay)dpy)->proto_minor_version)
 #define VendorRelease(dpy) 	(((_XPrivDisplay)dpy)->release)
 #define DisplayString(dpy) 	(((_XPrivDisplay)dpy)->display_name)
-#define DefaultDepth(dpy, scr) 	(ScreenOfDisplay(dpy,scr)->root_depth)
+--]]
+
+function exports.DefaultDepth(dpy, scr) 	
+	return (exports.ScreenOfDisplay(dpy,scr).root_depth)
+end
+
+--[[
 #define DefaultColormap(dpy, scr)(ScreenOfDisplay(dpy,scr)->cmap)
 #define BitmapUnit(dpy) 	(((_XPrivDisplay)dpy)->bitmap_unit)
 #define BitmapBitOrder(dpy) 	(((_XPrivDisplay)dpy)->bitmap_bit_order)
@@ -4151,31 +4174,6 @@ extern void XFreeEventData(
     XGenericEventCookie*	/* cookie*/
 );
 ]]
-
--- Library functions
-exports.XOpenDisplay = Lib_X11.XOpenDisplay;
-exports.XCheckWindowEvent = Lib_X11.XCheckWindowEvent;
-exports.XClearWindow = Lib_X11.XClearWindow;
-exports.XCloseDisplay = Lib_X11.XCloseDisplay;
-exports.XCreateGC = Lib_X11.XCreateGC;
-exports.XCreateImage = Lib_X11.XCreateImage;
-exports.XInitImage = Lib_X11.XInitImage;
-exports.XCreateSimpleWindow = Lib_X11.XCreateSimpleWindow;
-exports.XDefaultVisual = Lib_X11.XDefaultVisual;
-exports.XDestroyWindow = Lib_X11.XDestroyWindow;
-exports.XDrawString = Lib_X11.XDrawString;
-exports.XFreeGC = Lib_X11.XFreeGC;
-exports.XGetWindowAttributes = Lib_X11.XGetWindowAttributes;
-exports.XInternAtom = Lib_X11.XInternAtom;
-exports.XMapRaised = Lib_X11.XMapRaised;
-exports.XMapWindow = Lib_X11.XMapWindow;
-exports.XNextEvent = Lib_X11.XNextEvent;
-exports.XPutImage = Lib_X11.XPutImage;
-exports.XSelectInput = Lib_X11.XSelectInput;
-exports.XSetBackground = Lib_X11.XSetBackground;
-exports.XSetForeground = Lib_X11.XSetForeground;
-exports.XSetWMProtocols = Lib_X11.XSetWMProtocols;
-exports.XStoreName = Lib_X11.XStoreName;
 
 
 return exports

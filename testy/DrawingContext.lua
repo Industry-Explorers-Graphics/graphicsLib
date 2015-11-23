@@ -16,9 +16,9 @@ function DrawingContext.init(self, fb, data)
 	local obj = {
 		width = fb.width;
 		height = fb.height;
-		data = fb.data;
-		fb = fb;
 		data = data;
+		fb = fb;
+
 	}
 	setmetatable(obj, DrawingContext_mt)
 
@@ -26,7 +26,8 @@ function DrawingContext.init(self, fb, data)
 end
 
 function DrawingContext.new(self, width, height, data)
-	return self:init(width, height, data)
+    local fb = render.createFrameBuffer( width, height, 0, 0, data, width ) 
+	return self:init(fb, data)
 end
 
 
@@ -42,6 +43,10 @@ end
 
 function DrawingContext.rect(self, x, y, awidth, aheight, value)
 	render.drawRectFill( self.fb, x, y, awidth, aheight, ffi.cast("pixel", value) );
+end
+
+function DrawingContext.rectBorder( self, x, y, awidth, aheight, value )
+    render.drawRectFill( self.fb, x-1, y-1, awidth+1, aheight+1, value )
 end
 
 return DrawingContext

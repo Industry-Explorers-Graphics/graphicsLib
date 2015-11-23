@@ -1,16 +1,20 @@
---guiapp1.lua
---package.path = package.path..";../?.lua"
+#!/usr/bin/env luajit
 
-local render = require("render_ffi")
-local gap = require("GuiApplication")
-local DrawingContext = require("DrawingContext")
+--guiapp2.lua
+package.path = package.path..";../?.lua"
+
+
+--[[
+	Test using the GuiApp concept, whereby the interactor
+	is a pluggable component.
+--]]
+local gap = require("GuiApp")
 local colors = require("colors")
 
 local awidth = 640;
 local aheight = 480;
 
 local dc = nil;
-local fb = nil;
 
 --[[
 	Mouse Activity functions.  Implement whichever
@@ -48,29 +52,45 @@ function keyReleased()
 	print("keyReleased(): ", keyCode)
 end
 
+function keyTyped(achar)
+	--print("keyTyped: ", achar)
 
+	if keyChar ~= nil then
+		print(keyChar);
+	end
+end
 
-
+-- A setup function isn't strictly required, but 
+-- you MUST at least call gap.size(), or no window
+-- will be created.
 function setup()
 	print("setup")
-	local data = gap.size(awidth,aheight)
-	fb = render.createFrameBuffer (awidth, aheight, 0, 0, data, awidth )
-	dc = DrawingContext(fb, data)
+	dc = size(awidth,aheight)
 end
 
 local count = 1;
 
+-- the loop function will be called every time through the 
+-- event loop, regardless of any frame rate.  This might be
+-- fine when you don't mind stalling the loop, and you don't
+-- particularly care about frame rate.
 function loop()
 	--print("loop: ", count)
 	count = count + 1;
-	dc:setPixel(10, 10, colors.WHITE)
-
-	dc:hline(10, 20, 100, colors.WHITE)
 
 	dc:rect(10, 30, 100, 100, colors.RED)
-	dc:rect(110, 30, 100, 100, colors.GREEN)
-	dc:rect(210, 30, 100, 100, colors.BLUE)
 end
 
+local function tick()
+	local count = 1
+	
+	while true do
+		print("tick: ", count)
+		count = count + 1;
+		yield();
+	end
+end
 
-gap.run()
+--spawn(tick)
+
+run()
