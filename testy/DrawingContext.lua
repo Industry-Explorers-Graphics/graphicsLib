@@ -18,6 +18,10 @@ function DrawingContext.init(self, fb, data)
 		height = fb.height;
 		data = data;
 		fb = fb;
+        nX = 10;
+        nY = 30;
+        nWidth = 100;
+        nHeight = 100;
 
 	}
 	setmetatable(obj, DrawingContext_mt)
@@ -46,7 +50,20 @@ function DrawingContext.rect(self, x, y, awidth, aheight, value)
 end
 
 function DrawingContext.rectBorder( self, x, y, awidth, aheight, value )
-    render.drawRectFill( self.fb, x-1, y-1, awidth+1, aheight+1, value )
+    render.drawRectFill( self.fb, x-1, y-1, awidth+6, aheight+6, ffi.cast("pixel", value) );
+end
+
+function DrawingContext.contains( self, x, y )
+    if x >= self.nX and x <= self.nX + self.nWidth and y >= self.nY and y <= self.nY + self.nHeight then
+        return true
+
+    else
+       return false
+    end
+end
+
+function DrawingContext.text( self, x, y, text, value )
+    render.drawText( self.fb, x, y, text,ffi.cast("pixel", value) );
 end
 
 return DrawingContext
