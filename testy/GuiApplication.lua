@@ -126,6 +126,8 @@ local function run ()
 	while( true ) do
 		if nil ~= loop then
 			loop()
+        else
+            print( "Please create a loop function to execute program" )
 		end
 
 		if (XCheckWindowEvent(dis, win, myEvents, event) ~= 0) then
