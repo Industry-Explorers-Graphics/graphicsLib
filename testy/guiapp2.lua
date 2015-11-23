@@ -25,6 +25,11 @@ local dc = nil;
 --]]
 function mousePressed()
 	print("mousePressed(): ", mouseButton)
+    --[[if dc:contains( mouseX, mouseY ) then
+        dc:rectBorder( 10, 30, 100, 100, colors.GREEN )
+    else
+        print( "Please click inside of rectangle" )
+    end ]]
 end
 
 function mouseReleased()
@@ -77,13 +82,8 @@ local count = 1;
 function loop()
 	--print("loop: ", count)
 	count = count + 1;
-	dc:setPixel(10, 10, colors.white)
 
-	dc:hline(10, 20, 100, colors.white)
-
-	dc:rect(10, 30, 100, 100, colors.red)
-	dc:rect(110, 30, 100, 100, colors.green)
-	dc:rect(210, 30, 100, 100, colors.blue)
+	dc:rect(10, 30, 100, 100, colors.RED)
 end
 
 local function tick()
@@ -96,6 +96,6 @@ local function tick()
 	end
 end
 
-spawn(tick)
+--spawn(tick)
 
 run()
