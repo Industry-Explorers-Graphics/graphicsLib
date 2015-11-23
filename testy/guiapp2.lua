@@ -25,11 +25,6 @@ local dc = nil;
 --]]
 function mousePressed()
 	print("mousePressed(): ", mouseButton)
-    --[[if dc:contains( mouseX, mouseY ) then
-        dc:rectBorder( 10, 30, 100, 100, colors.GREEN )
-    else
-        print( "Please click inside of rectangle" )
-    end ]]
 end
 
 function mouseReleased()
