@@ -19,9 +19,9 @@ function DrawingContext.init(self, fb, data)
 		data = data;
 		fb = fb;
         nX = 10;
-        nY = 30;
-        nWidth = 100;
-        nHeight = 100;
+        nY = 300;
+        nWidth = 50;
+        nHeight = 20;
 
 	}
 	setmetatable(obj, DrawingContext_mt)
@@ -66,4 +66,7 @@ function DrawingContext.text( self, x, y, text, value )
     render.drawText( self.fb, x, y, text,ffi.cast("pixel", value) );
 end
 
+function DrawingContext.circleFill( self, x, y, radius, value )
+    render.drawCircleFill( self.fb, x, y, radius, ffi.cast("pixel", value) );
+end
 return DrawingContext
