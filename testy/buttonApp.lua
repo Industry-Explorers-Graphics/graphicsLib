@@ -25,10 +25,10 @@ local dc = nil;
 --]]
 function mousePressed()
     if mouseButton == 1 and dc:contains( mouseX, mouseY ) then
-        print( "Thank you for selecting" )
+        --print( "Thank you for selecting" )
        return true
     else
-        print( "Please click inside of rectangle" )
+        --print( "Please click inside of rectangle" )
         return false
     end
 end

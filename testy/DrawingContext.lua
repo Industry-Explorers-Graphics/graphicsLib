@@ -19,9 +19,9 @@ function DrawingContext.init(self, fb, data)
 		data = data;
 		fb = fb;
         nX = 10;
-        nY = 300;
-        nWidth = 50;
-        nHeight = 20;
+        nY = 30;
+        nWidth = 100;
+        nHeight = 30;
 
 	}
 	setmetatable(obj, DrawingContext_mt)

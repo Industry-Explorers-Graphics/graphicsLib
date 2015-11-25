@@ -25,10 +25,10 @@ local dc = nil;
 --]]
 function mousePressed()
     if mouseButton == 1 and dc:contains( mouseX, mouseY ) then
-        print( "Thank you for selecting" )
+        --print( "Thank you for selecting" )
        return true
     else
-        print( "Please click inside of rectangle" )
+        --print( "Please click inside of rectangle" )
         return false
     end
 end
@@ -87,13 +87,18 @@ function loop()
     
     dc:rect( 0, 0, 640, 480, colors.WHITE )
     dc:rect( 10, 300, 50, 20, colors.BLUE )
-    dc:circleFill( 20, 200, 5, colors.BLUE  )
+    --dc:circleFill( 20, 200, 5, colors.BLUE )
+    
+    local seconds = os.clock()
+    local cy = 20
+    seconds = seconds * 60 
+    dc:circleFill( 20 + seconds, cy - 1, 5, colors.BLUE )
     --dc:text( 45, 35, "OK", colors.WHITE ) 
 
     
     if mousePressed() then
 	    dc:rectBorder( 10, 300, 50, 20, colors.GREEN )
-        dc:rect(10, 300, 50, 20, colors.PURPLE )
+        dc:rect( 10, 300, 50, 20, colors.PURPLE )
         --dc:text( 45, 35, "OK", colors.WHITE )
     end
 end
