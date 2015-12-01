@@ -10,6 +10,9 @@ package.path = package.path..";../?.lua"
 --]]
 local gap = require("GuiApp")
 local colors = require("colors")
+local pushButton = require("pushButton")
+local label = require("label")
+local button = pushButton:new( 10, 30,{ label:new( 10, 30, "NEXT", colors.WHITE ) }, 0 )
 
 local awidth = 640;
 local aheight = 480;
@@ -24,7 +27,7 @@ local dc = nil;
 	application doesn't require any mouse activity.
 --]]
 function mousePressed()
-    if mouseButton == 1 and dc:contains( mouseX, mouseY ) then
+    if mouseButton == 1 and button:contains( mouseX, mouseY ) then
         --print( "Thank you for selecting" )
        return true
     else
@@ -34,12 +37,6 @@ function mousePressed()
 end
 
 function mouseReleased()
-    if mousePressed() then
-        print( "I'm free!" )  
-        sleep(.1) 
-        mouseButton = 0
-    return true
-    end
 end
 
 function mouseDragged()
@@ -86,18 +83,22 @@ function loop()
 	count = count + 1;
     
     dc:rect( 0, 0, 640, 480, colors.BLACK )
-    dc:rect(10, 30, 100, 30, colors.RED )
+    button:draw( dc )
     --dc:text( 45, 35, "OK", colors.WHITE ) 
-
     
     if mousePressed() then
-	    dc:rectBorder( 10, 30, 100, 30, colors.GREEN )
-        dc:rect(10, 30, 100, 30, colors.PURPLE )
+	    --dc:rectBorder( 10, 30, 100, 30, colors.GREEN )
+        button.state = 1
         --dc:text( 45, 35, "OK", colors.WHITE )
     end
+
+    --if mouseReleased() then
+       -- sleep( 2 )
+        --button.state = 0
+    --end
 end
  
---will not work in Windows
+--this sleep function will not work in Windows
 function sleep(n)
   os.execute("sleep " .. tonumber(n))
 end

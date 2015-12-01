@@ -19,8 +19,8 @@ function Label.new(self, x, y, text, color)
   return obj
 end
 
-function Label.draw(self, fb)
-   drawLib.drawText(fb, self.x, self.y, self.text, self.color)
+function Label.draw( self, dc )
+   dc:text( self.x, self.y, self.text, self.color )
 end
 
 return Label
