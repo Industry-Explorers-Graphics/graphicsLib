@@ -43,7 +43,12 @@ int main ()
     write_ppm( "text.ppm", fb3 );
 
     frameBuffer *fb4 = createFrameBuffer( 0, 0, 400, 600, 0, 400 );
-    points( fb4, 0, 0, GREEN );
-    write_ppm( "pixel.ppm", fb4 );
+    drawRectFrame( fb4, 0, 0, 60, 80, BLUE );
+    write_ppm( "rect.ppm", fb4 );
+
+    frameBuffer *fb5 = createFrameBuffer( 0, 0, 400, 600, 0, 400 );
+    points( fb5, 0, 0, GREEN );
+    write_ppm( "pixel.ppm", fb5 );
+
     return 0;
 }
