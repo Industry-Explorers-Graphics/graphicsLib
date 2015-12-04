@@ -33,47 +33,22 @@ void write_ppm( char *filename, frameBuffer * fb )
 /* Make the picture, store it, and exit */
 int main ()
 {
-    //frameBuffer *fb =  createFrameBuffer( 320, 256, 0, 0, 0 );
-    
-
-    frameBuffer *fb2 =  createFrameBuffer( 320, 256, 0, 0, 0, 320 );
+    frameBuffer *fb2 =  createFrameBuffer( 0, 0, 400, 600, 0, 400 );
     //drawRectFrame( fb2, 1, 1,  100, 200, PINK );
-    drawRectFill( fb2, 1, 1, 100, 200, PINK );
+    drawRectFill( fb2, 0, 0, 10, 20, PINK );
     write_ppm( "newR.ppm", fb2 );
 
-    //frameBuffer *fb3 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
-    //drawCircleFrame( fb3, 100, 100, 10, PINK );
-    //write_ppm( "circleFrame.ppm", fb3 );
+    frameBuffer *fb3 = createFrameBuffer( 0, 0, 400, 600, 0, 400 );
+    drawText( fb3, 0, 0, "hey", WHITE );
+    write_ppm( "text.ppm", fb3 );
 
-    //frameBuffer *fb4 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
-    //drawEllipseFrame( fb4, 100, 100, 10, 20, PINK );
-    //write_ppm( "ellipseFrame.ppm", fb4 );
+    frameBuffer *fb4 = createFrameBuffer( 0, 0, 400, 600, 0, 400 );
+    drawRectFrame( fb4, 0, 0, 60, 80, BLUE );
+    write_ppm( "rect.ppm", fb4 );
 
-    //frameBuffer *fb5 =  createFrameBuffer( 320, 256, 0, 0, 0, 320 );
-    //drawTriangleFill( fb5, 20, 20, 50, 50, 10, 50, PINK );
-    //drawTriangleFrame( fb5, 30, 50, 50, 20, 50, 20, 10, 20, 30, 50, 10, 20, PINK );
-    //write_ppm( "triFill.ppm", fb5 );
+    frameBuffer *fb5 = createFrameBuffer( 0, 0, 400, 600, 0, 400 );
+    points( fb5, 0, 0, GREEN );
+    write_ppm( "pixel.ppm", fb5 );
 
-    //frameBuffer *fb6 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
-    //bezier(fb6, 350, 100, 550, 10, 600, 100, PINK);
-    //write_ppm( "bezier.ppm", fb6 );
-
-    //frameBuffer *fb7 =  createFrameBuffer( 320, 256, 0, 0, 0, 320 );
-    //frameBuffer *dst = createFrameBuffer( 400, 340, 0, 0, fb7->data, fb7->pixelStride );
-   
-   // drawHorizontalLine( fb7, 50, 10, 20, PINK );
-    //drawHorizontalLine( fb7, 50, 10, 30, RGBA(249, 54, 87, 100 ) );
-    //drawHorizontalLine( fb7, 50, 10, 40, RGBA(249, 54, 87, 50) );
-    //write_ppm( "lineTransp.ppm", fb7 );
-
-    //bitBlt(dst, 20, 30, fb7, 10, 20, 60, 60 );
-    //write_ppm ( "bitBltTest.ppm", dst );
-
-    //frameBuffer *fb8 =  createFrameBuffer( 320, 256, 0, 0, 0, 1, 0 );
-    //char *str = "hello world!";
-    //drawText(fb8, 2, 10, str, PINK);
-    //write_ppm ( "text.ppm", fb8 );
-
-    // create a test for the coverPixel function
     return 0;
 }

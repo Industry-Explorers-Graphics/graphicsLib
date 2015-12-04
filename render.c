@@ -9,17 +9,17 @@
 #define swapVerts( a, b ) { int16_t t = a; a = b; b = t; }
 
 /* Image functions */
-frameBuffer *createFrameBuffer( int width, int height, int x, int y, pixel *data, int pixelStride )
+frameBuffer *createFrameBuffer(  int x, int y, int width, int height, pixel *data, int pixelStride )
 {
-    frameBuffer *fb = ( frameBuffer * )malloc( sizeof( frameBuffer ) );
-    fb->width = width;
-    fb->height = height;
+    frameBuffer *fb = ( frameBuffer *)malloc( sizeof( frameBuffer ) );
     fb->x = x;
     fb->y = y;
+    fb->width = width;
+    fb->height = height;
 
     if ( data == NULL )
     {
-       fb->data = ( pixel * )malloc( sizeof( pixel )* width * height );
+       fb->data = ( pixel *)malloc( sizeof( pixel )* width * height );
        // was malloc called on it's own data?
        fb->ownsData = 1; 
        fb->pixelStride = width;
@@ -87,16 +87,16 @@ void coverPixel( frameBuffer *fb, int x, int y, pixel color )
 }
 
 /* Create  a horizontal line on frameBuffer */
-void drawHorizontalLine( frameBuffer *fb, int length, int x, int y, pixel color )
+void drawHorizontalLine( frameBuffer *fb, int x, int y, int length, pixel color )
 {
     for( int i = x; i < ( x + length ); i++ )
     {
-        coverPixel( fb, i, y, color );
+        setPixel( fb, i, y, color );
     }
 }
 
 /* Draw a vertical line */
-void drawVerticalLine( frameBuffer *fb, int length, int x, int y, pixel color )
+void drawVerticalLine( frameBuffer *fb, int x, int y, int length, pixel color )
 {
     for( int i = y; i < ( y + length ); i++ )
     {
@@ -176,20 +176,20 @@ void drawDiagonalLine( frameBuffer *fb, int x1, int y1, int x2, int y2, pixel co
 
 /* Draw a rectangle with square corners*/
 /* outline of rect function */
-void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel color )
+void drawRectFrame( frameBuffer *fb, int x, int y, int width, int height, pixel color )
 {
-   if ( length > 0 && width > 0 )
+   if ( height > 0 && width > 0 )
    {
-        for( int i = x; i < ( x + length ); i++ )
+        for( int i = x; i <= ( x + height ); i++ )
         {
             setPixel( fb, i, y, color );
             setPixel( fb, i, ( y + width ), color );
         }
 
-        for( int j = y; j < ( y + width ); j++ )
+        for( int j = y; j <= ( y + width ); j++ )
         {
             setPixel( fb, x, j, color );
-            setPixel( fb, ( x + length ), j, color );
+            setPixel( fb, ( x + height ), j, color );
         }
 
     }
@@ -197,11 +197,11 @@ void drawRectFrame( frameBuffer *fb, int length, int width, int x, int y, pixel 
 
 /* Create a filled rectangle  */
 
-void drawRectFill( frameBuffer *fb, int x, int y, int width, int length, pixel color )
+void drawRectFill( frameBuffer *fb, int x, int y, int width, int height, pixel color )
 {
-    for ( int i = y; i <= ( y + length ); i++ )
+    for ( int i = y; i <= ( y + height ); i++ )
     {
-        drawHorizontalLine( fb, width, x, i, color );
+        drawHorizontalLine( fb, x, i, width, color );
     }
 }
 
@@ -329,7 +329,7 @@ void drawTriangleFill( frameBuffer *fb,
         else if ( sorted[2].x > b )
             b = sorted[2].x;
 
-		drawHorizontalLine( fb, b - a + 1, a, sorted[0].y, color );
+		drawHorizontalLine( fb, a, sorted[0].y, b - a + 1, color );
         return;
     }
 
@@ -366,7 +366,7 @@ void drawTriangleFill( frameBuffer *fb,
 		*/
 
 		if ( a > b ) swapVerts( a, b );
-			drawHorizontalLine( fb, b - a + 1, a, y, color );
+			drawHorizontalLine( fb, a, y, b - a + 1, color );
 	}
 
 	// For lower part of triangle, find scanline crossings for segments
@@ -386,7 +386,7 @@ void drawTriangleFill( frameBuffer *fb,
 		if ( a > b )
 			swapVerts( a, b );
 
-		drawHorizontalLine( fb, b - a + 1, a, y, color );
+		drawHorizontalLine( fb, a, y, b - a + 1, color );
 	}
 }
 
@@ -428,10 +428,10 @@ void drawCircleFill( frameBuffer *fb, int x0, int y0, int radius, pixel color )
 
   while( y <= x )
   {
-    drawHorizontalLine( fb,(y + x0) - (-y + x0) , -y + x0, -x + y0, color );
-    drawHorizontalLine( fb,(x + x0) - (-x + x0), -x + x0, -y + y0, color );
-    drawHorizontalLine( fb,(x + x0)- (-x + x0), -x + x0,  y + y0, color );
-    drawHorizontalLine( fb, (y + x0) - (-y + x0), -y + x0,  x + y0, color);
+    drawHorizontalLine( fb, -y + x0, -x + y0, (y + x0) - (-y + x0), color );
+    drawHorizontalLine( fb, -x + x0, -y + y0, (x + x0) - (-x + x0), color );
+    drawHorizontalLine( fb, -x + x0,  y + y0, (x + x0)- (-x + x0), color );
+    drawHorizontalLine( fb, -y + x0,  x + y0, (y + x0) - (-y + x0), color );
     
     y++;
     if ( decisionOver2<=0 )
