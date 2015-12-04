@@ -1,15 +1,18 @@
 #!/usr/bin/env luajit
 
 --guiapp2.lua
-package.path = package.path..";./graphicsLib/?.lua"
+package.path = package.path..";../?.lua"
 
 
 --[[
 	Test using the GuiApp concept, whereby the interactor
 	is a pluggable component.
 --]]
-local gap = require("GuiApp")
-local colors = require("colors")
+local gap = require("graphicsLib.GuiApp")
+local colors = require("graphicsLib.colors")
+local pushButton = require("graphicsLib.pushButton")
+local label = require("graphicsLib.label")
+local button = pushButton:new( 10, 30,{ label:new( 0, 0, "NEXT", colors.WHITE ) }, 0 )
 
 local awidth = 640;
 local aheight = 480;
@@ -24,19 +27,22 @@ local dc = nil;
 	application doesn't require any mouse activity.
 --]]
 function mousePressed()
-	print("mousePressed(): ", mouseButton)
+    if mouseButton == 1 and button:contains( mouseX, mouseY ) then
+        --print( "Thank you for selecting" )
+       return true
+    else
+        --print( "Please click inside of rectangle" )
+        return false
+    end
 end
 
 function mouseReleased()
-	print("mouseReleased(): ", mouseButton)
 end
 
 function mouseDragged()
-	print("mouse drag: ", mouseX, mouseY)
 end
 
 function mouseMoved()
-	print("mouse move: ", mouseX, mouseY)
 end
 
 --[[
@@ -45,11 +51,9 @@ end
 	Implement as many of these as your application needs.
 --]]
 function keyPressed()
-	print("keyPressed(): ", keyCode)
 end
 
 function keyReleased()
-	print("keyReleased(): ", keyCode)
 end
 
 function keyTyped(achar)
@@ -77,8 +81,26 @@ local count = 1;
 function loop()
 	--print("loop: ", count)
 	count = count + 1;
+    
+    dc:rect( 0, 0, 640, 480, colors.BLACK )
+    button:draw( dc )
+    --dc:text( 45, 35, "OK", colors.WHITE ) 
+    
+    if mousePressed() then
+	    --dc:rectBorder( 10, 30, 100, 30, colors.GREEN )
+        button.state = 1
+        --dc:text( 45, 35, "OK", colors.WHITE )
+    end
 
-	dc:rect(10, 30, 100, 100, colors.RED)
+    --if mouseReleased() then
+       -- sleep( 2 )
+        --button.state = 0
+    --end
+end
+ 
+--this sleep function will not work in Windows
+function sleep(n)
+  os.execute("sleep " .. tonumber(n))
 end
 
 local function tick()

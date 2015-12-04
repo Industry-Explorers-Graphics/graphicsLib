@@ -1,5 +1,5 @@
 local ffi = require("ffi")
-local render = require("render_ffi")
+local render = require("graphicsLib.render_ffi")
 
 local DrawingContext = {}
 setmetatable(DrawingContext, {
@@ -11,14 +11,12 @@ local DrawingContext_mt = {
 	__index = DrawingContext;
 }
 
-
 function DrawingContext.init(self, fb, data)
 	local obj = {
 		width = fb.width;
 		height = fb.height;
 		data = data;
 		fb = fb;
-
 	}
 	setmetatable(obj, DrawingContext_mt)
 
@@ -26,11 +24,9 @@ function DrawingContext.init(self, fb, data)
 end
 
 function DrawingContext.new(self, width, height, data)
-    local fb = render.createFrameBuffer( width, height, 0, 0, data, width ) 
+    local fb = render.createFrameBuffer( 0, 0, width, height, data, width ) 
 	return self:init(fb, data)
 end
-
-
 
 function DrawingContext.setPixel(self, x, y, value)
 	local offset = y*self.width+x;
@@ -38,7 +34,7 @@ function DrawingContext.setPixel(self, x, y, value)
 end
 
 function DrawingContext.hline(self, x, y, length, value)
-	render.drawHorizontalLine( self.fb, length, x, y, ffi.cast("pixel",value) );
+	render.drawHorizontalLine( self.fb, x, y, length, ffi.cast("pixel",value) );
 end
 
 function DrawingContext.rect(self, x, y, awidth, aheight, value)
@@ -46,7 +42,14 @@ function DrawingContext.rect(self, x, y, awidth, aheight, value)
 end
 
 function DrawingContext.rectBorder( self, x, y, awidth, aheight, value )
-    render.drawRectFill( self.fb, x-1, y-1, awidth+1, aheight+1, value )
+    render.drawRectFill( self.fb, x-1, y-1, awidth+6, aheight+6, ffi.cast("pixel", value) );
 end
 
+function DrawingContext.text( self, x, y, text, value )
+    render.drawText( self.fb, x, y, text, ffi.cast("pixel", value) );
+end
+
+function DrawingContext.circleFill( self, x, y, radius, value )
+    render.drawCircleFill( self.fb, x, y, radius, ffi.cast("pixel", value) );
+end
 return DrawingContext
